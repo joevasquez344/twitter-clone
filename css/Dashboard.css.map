@@ -1,0 +1,10 @@
+{
+    "version": 3,
+    "mappings": "AAEA,AAAA,UAAU,AAAC,CACT,UAAU,CCFG,OAAO,CDGpB,OAAO,CAAE,IAAI,CACb,qBAAqB,CAAE,WAAW,CAClC,KAAK,CAAE,GAAG,CACV,MAAM,CAAE,KAAK,CACb,MAAM,CAAE,IAAI,CACb,AAED,AAAA,SAAS,AAAC,CACR,MAAM,CAAE,IAAI,CACZ,KAAK,CAAE,KAAK,CACb",
+    "sources": [
+        "../client/src/pages/Dashboard/Dashboard.scss",
+        "../client/src/scss/1-helpers/_variables.scss"
+    ],
+    "names": [],
+    "file": "Dashboard.css"
+}
