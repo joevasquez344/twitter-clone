@@ -1,0 +1,40 @@
+@import "../../../scss/1-helpers/variables";
+@import "../../../scss/1-helpers/mixins";
+
+.tweet {
+  display: flex;
+  padding: 10px 20px;
+  border-bottom: 1px solid #38444d;
+  cursor: pointer;
+  background: $twitter-navy;
+  @include transition;
+
+  &:hover {
+    background-color: rgba($color: white, $alpha: 0.025);
+  }
+
+  header {
+    color: white;
+    display: flex;
+  }
+
+  &__profileImage {
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+    border-radius: 50%;
+    background: dodgerblue;
+  }
+
+  &__displayName {
+    margin-right: 5px;
+  }
+
+  &__handle {
+    color: gray;
+  }
+
+  &__text {
+    color: white;
+  }
+}

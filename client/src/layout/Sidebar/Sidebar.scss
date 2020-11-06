@@ -1,0 +1,107 @@
+@import "../../scss/1-helpers/variables";
+@import "../../scss/1-helpers/mixins";
+
+.sidebar {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  margin-right: 30px;
+  padding-top: 15px;
+
+  header {
+    margin-bottom: 30px;
+    padding-left: 10px;
+  }
+
+  li {
+    margin-bottom: 15px;
+    color: white;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+
+    .sidebar__shortWrap {
+      display: flex;
+      padding: 10px 30px 10px 10px;
+      border-radius: 500px;
+      @include transition;
+      padding: 10px 25px 10px 13px;
+    }
+
+    &:hover {
+      .sidebar__shortWrap {
+        // background-color:;
+        background-color: rgba($color: $twitter-blue, $alpha: 0.2);
+        color: $twitter-blue;
+      }
+    }
+  }
+}
+
+// .sidebar li:nth-child(1):hover {
+//   background: $twitter-blue;
+//   border-radius: 500px;
+// }
+// .sidebar li:nth-child(2):hover {
+//   background: $twitter-blue;
+//   border-radius: 500px;
+// }
+// .sidebar li:nth-child(3):hover {
+//   background: $twitter-blue;
+//   border-radius: 500px;
+// }
+// .sidebar li:nth-child(4):hover {
+//   background: $twitter-blue;
+//   border-radius: 500px;
+// }
+.sidebar li span:nth-child(1) {
+  width: 30px;
+  display: flex;
+  align-items: center;
+  font-size: 0.75rem;
+}
+.sidebar li span:nth-child(2) {
+  font-weight: 600;
+  font-size: 1.2rem;
+  margin-left: 20px;
+}
+.sidebar li:nth-child(5) button {
+  width: 100%;
+  background: $twitter-blue;
+  border: none;
+  padding: 13px;
+  border-radius: 500px;
+  color: white;
+  font-weight: bold;
+  margin-top: 20px;
+}
+.sidebar footer {
+  position: absolute;
+  bottom: 2%;
+  color: white;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+.sidebar-user-info {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: auto;
+}
+.sidebar-display-name {
+  font-weight: bold;
+}
+.sidebar-handle {
+  color: gray;
+}
+footer > img {
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
+  border-radius: 50%;
+  background: $twitter-blue;
+}
+.sidebar-util-wrapper {
+  position: absolute;
+  right: 0;
+}

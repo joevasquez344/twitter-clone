@@ -1,0 +1,87 @@
+@import '../../../scss/1-helpers/variables';
+
+.sign-up-modal-screen {
+  position: absolute;
+  background: transparent;
+  height: 100vh;
+  width: 100vw;
+  z-index: 1;
+}
+.sign-up-modal {
+  width: 23vw;
+  height: 50vh;
+  position: absolute;
+  background: $twitter-navy;
+  left: 38.5%;
+  top: 25%;
+  z-index: 2;
+  color: white;
+  border-radius: 8px;
+  box-shadow: 0px 0px 100px $twitter-blue;
+}
+.sign-up-modal i {
+}
+.spacer {
+  color: transparent;
+  width: 80px;
+}
+.sign-up-modal-header {
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 20px;
+}
+.sign-up-modal-header button {
+  background: $twitter-blue;
+  border: none;
+  color: white;
+  font-weight: bold;
+  width: 80px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 500px;
+}
+.create-account-header {
+  font-weight: bold;
+  margin-bottom: 30px;;
+}
+
+.sign-up-modal-main-content {
+  padding: 0px 30px;
+}
+.sign-up-modal-main-content form {
+    display:flex;
+    flex-direction: column;
+}
+
+.sign-up-modal-input {
+  background: #192734;
+  border: none;
+  border-bottom: 2px solid #8899a6;
+  margin-bottom: 20px;
+  height: 60px;
+  padding: 10px;
+}
+.sign-up-modal-input-clicked {
+    background: #192734;
+    border: none;
+    border-bottom: 2px solid $twitter-blue;
+    margin-bottom: 20px;
+    height: 60px;
+    padding: 10px;
+}
+.sign-up-modal-input-clicked::placeholder {
+    color: $twitter-blue;
+}
+.sign-up-modal-input::placeholder {
+  color: gray;
+}
+.close-modal-icon {
+    color: $twitter-blue;
+    cursor: pointer;
+    width: 80px;
+}

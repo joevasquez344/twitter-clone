@@ -1,0 +1,112 @@
+@import "../../scss/1-helpers/variables";
+@import "../../scss/1-helpers/mixins";
+
+.profile {
+  &__banner {
+    height: 25vh;
+    background: gray;
+  }
+
+  &__config {
+    position: relative;
+    height: 100px;
+    img {
+      width: 150px;
+      height: 150px;
+      border-radius: 500px;
+      background: $twitter-blue;
+      position: relative;
+      top: -75px;
+      left: 15px;
+    }
+    .profile__editBtn {
+      position: absolute;
+      right: 15px;
+      top: 10px;
+      border: 1px solid $twitter-blue;
+      border-radius: 500px;
+      background: transparent;
+      color: $twitter-blue;
+      padding: 7px 15px;
+      font-weight: bold;
+      @include transition;
+
+      &:hover {
+        background-color: rgba($color: $twitter-blue, $alpha: 0.05);
+      }
+    }
+  }
+  &__names {
+    padding: 0 15px;
+    margin-bottom: 5px;
+    h5 {
+      font-weight: bold;
+      color: white;
+      margin-bottom: 0;
+    }
+    small {
+      font-weight: 400;
+      color: gray;
+      font-size: 0.9rem;
+    }
+  }
+
+  &__locationAndDate {
+    color: gray;
+    font-weight: 400;
+    display: flex;
+    padding: 0 15px;
+    margin-bottom: 5px;
+
+    div {
+      margin-right: 10px;
+
+      span {
+        margin-right: 7px;
+      }
+    }
+  }
+
+  &__follow {
+    display: flex;
+    color: gray;
+    padding: 0 15px;
+    margin-bottom: 30px;
+
+    div {
+      margin-right: 10px;
+      span {
+        margin-right: 7px;
+      }
+      span:nth-child(1) {
+        color: white;
+        font-weight: bold;
+      }
+    }
+  }
+
+  &__tabs {
+      border-bottom: 1px solid $twitter-gray;
+    ul {
+      display: flex;
+      justify-content: space-evenly;
+
+      li {
+        color: lightgray;
+        font-weight: bold;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 50px;
+        cursor: pointer;
+        @include transition;
+
+        &:hover {
+        background-color: rgba($color: $twitter-blue, $alpha: 0.2);
+            color: $twitter-blue;
+        }
+      }
+    }
+  }
+}

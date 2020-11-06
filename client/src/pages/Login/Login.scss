@@ -1,0 +1,64 @@
+@import "../../scss/1-helpers/variables";
+
+.login {
+  background: $twitter-navy;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  padding-top: 20px;
+  flex-direction: column;
+}
+.login-header {
+  color: white;
+  margin-top: 40px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+.login-form {
+  width: 30%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.login-form-grouping {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-bottom: 20px;
+}
+.login-label {
+  color: gray;
+  background: #192734;
+  margin-bottom: 0;
+}
+.login-input {
+  width: 100%;
+  padding: 5px;
+}
+.login-button {
+  color: white;
+  background: $twitter-blue;
+  border: none;
+  width: 100%;
+  border-radius: 500px;
+  padding: 10px 0px;
+}
+.login-extra {
+  color: $twitter-blue;
+  font-size: 0.95rem;
+  margin-top: 30px;
+  font-weight: 300;
+  letter-spacing: 0.03rem;
+}
+.login-extra span:nth-child(1) {
+  margin-right: 5px;
+  cursor: pointer;
+}
+.login-extra span:nth-child(3) {
+  margin-left: 5px;
+  cursor: pointer;
+}
+.login__error {
+  color: orangered;
+  margin-top: 10px;
+}

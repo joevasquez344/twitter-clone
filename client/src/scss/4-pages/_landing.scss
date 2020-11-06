@@ -1,0 +1,15 @@
+@import '../1-helpers/variables';
+
+.landing {
+    display:flex;
+
+
+    &__left {
+        width: 50%;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: $twitter-blue;
+    }
+}

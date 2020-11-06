@@ -1,0 +1,175 @@
+@import "../../../scss/1-helpers/variables";
+@import "../../../scss/1-helpers/mixins";
+
+.updateProfile {
+  position: absolute;
+  z-index: 5;
+  top: 50px;
+  border-radius: 8px;
+  width: 30vw;
+  background: $twitter-navy;
+  box-shadow: 0px 0px 100px $twitter-blue;
+  left: 35%;
+  overflow: scroll;
+  height: 70vh;
+
+  header {
+    display: flex;
+    align-items: center;
+    height: 5vh;
+    z-index: 5;
+    border-bottom: 1px solid $twitter-gray;
+    position: sticky;
+    background: $twitter-navy;
+    padding: 0 20px;
+    width: 100%;
+    top: 0;
+    i {
+      color: $twitter-blue;
+      margin-right: 40px;
+      cursor: pointer;
+    }
+    h3 {
+      width: 100%;
+      font-size: 1.3rem;
+      font-weight: bold;
+      color: white;
+      margin: auto;
+    }
+    button {
+      border-radius: 500px;
+      background: $twitter-blue;
+      color: white;
+      font-weight: bold;
+      border: none;
+      width: 100px;
+      height: 30px;
+    }
+  }
+
+  &__banner {
+    height: 20vh;
+    background: gray;
+  }
+
+  &__config {
+    position: relative;
+    height: 100px;
+    img {
+      width: 100px;
+      height: 100px;
+      border-radius: 500px;
+      background: $twitter-gray;
+      position: relative;
+      top: -40px;
+      left: 15px;
+    }
+    .profile__editBtn {
+      position: absolute;
+      right: 15px;
+      top: 10px;
+      border: 1px solid $twitter-blue;
+      border-radius: 500px;
+      background: transparent;
+      color: $twitter-blue;
+      padding: 7px 15px;
+      font-weight: bold;
+      @include transition;
+
+      &:hover {
+        background-color: rgba($color: $twitter-blue, $alpha: 0.05);
+      }
+    }
+  }
+  form {
+    padding: 20px;
+
+    .form-grouping {
+      background: #192734;
+      margin-bottom: 20px;
+      border-bottom: 2px solid gray;
+      display: flex;
+      flex-direction: column;
+      label {
+        color: gray;
+        padding: 0 10px;
+        margin: 0;
+      }
+      input {
+        background: transparent;
+        border: none;
+        color: white;
+        font-size: 1.2rem;
+        height: 100%;
+        padding-left: 10px;
+        padding-bottom: 7px;
+
+        &::placeholder {
+          color: white;
+        }
+      }
+
+      &:nth-child(2) {
+        height: 12vh;
+
+        input {
+          height: auto;
+        }
+      }
+    }
+    .updateProfileInput--clicked {
+      background: #192734;
+      margin-bottom: 20px;
+      display: flex;
+      flex-direction: column;
+      border-bottom: 2px solid $twitter-blue;
+
+      label {
+        color: $twitter-blue;
+        padding: 0 10px;
+        margin: 0;
+      }
+      input {
+        background: transparent;
+        border: none;
+        color: white;
+        font-size: 1.2rem;
+        height: 100%;
+        padding-left: 10px;
+        padding-bottom: 7px;
+
+        &::placeholder {
+          color: white;
+        }
+      }
+
+      &:nth-child(2) {
+        height: 12vh;
+
+        input {
+          height: auto;
+        }
+      }
+    }
+  }
+
+  footer {
+    padding: 0 20px 100px 20px;
+
+    span {
+      margin-right: 5px;
+
+      color: gray;
+    }
+    a {
+      color: $twitter-blue;
+      text-decoration: none;
+    }
+
+    h3 {
+      font-size: 1.2rem;
+      color: white;
+      font-weight: 400;
+    }
+  }
+}

@@ -1,0 +1,15 @@
+@import '../scss/1-helpers/variables';
+
+.layout {
+  background: $twitter-navy;
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  width: 65%;
+  height: 100vh;
+  margin: auto;
+}
+
+.trending {
+  height: 100%;
+  color: white;
+}
