@@ -3,12 +3,12 @@ import "./TweetFeed.css";
 
 import Tweet from "components/tweets/Tweet/Tweet.js";
 
-const TweetFeed = ({ tweets }) => {
-  console.log("Tweets from feed: ", tweets);
+const TweetFeed = ({ posts }) => {
+  console.log("Tweets from feed: ", posts);
   return (
     <div className="tweet-feed">
-      {tweets.map((tweet) => {
-        return <Tweet tweet={tweet} />;
+      {posts.map((post) => {
+        return <Tweet post={post} />;
       })}
     </div>
   );

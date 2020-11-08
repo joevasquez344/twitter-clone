@@ -1,7 +1,7 @@
 import React from "react";
 import './Tweet.scss';
 
-const Tweet = ({tweet}) => {
+const Tweet = ({post}) => {
   return (
     <div className="tweet">
       <img className='tweet__profileImage' src="" alt="" />
@@ -11,7 +11,7 @@ const Tweet = ({tweet}) => {
           <div className="tweet__handle">@Zook_sc</div>
         </header>
         <p className="tweet__text">
-         {tweet.text}
+         {post.text}
         </p>
         <img className="tweet__graphic" src="" alt="" />
       </section>

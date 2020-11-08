@@ -36,7 +36,7 @@ export const register = (handle, password, birthday) => async (dispatch) => {
   //     });
   //   });
 
-  const data = { handle, password, birthday };
+  const body = { handle, password, birthday };
 
   const config = {
     headers: {
@@ -44,13 +44,13 @@ export const register = (handle, password, birthday) => async (dispatch) => {
     },
   };
 
-  const authUser = await axios.post("/api/users", data, config);
+  const { data } = await axios.post("/api/users", body, config);
 
-  if (authUser) {
-    console.log(authUser)
+  if (data) {
+    console.log(data);
     dispatch({
       type: REGISTER_SUCCESS,
-      payload: authUser,
+      payload: data,
     });
   } else {
     dispatch({
@@ -60,7 +60,31 @@ export const register = (handle, password, birthday) => async (dispatch) => {
   }
 };
 
-export const login = (email, password) => (dispatch) => {
+export const login = (handle, password) => async (dispatch) => {
+  try {
+    const body = {
+      handle,
+      password,
+    };
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    const { data, status } = await axios.post("/api/users/login", body, config);
+
+    dispatch({
+      type: LOGIN_SUCCESS,
+      payload: data,
+    });
+
+    localStorage.setItem("user", JSON.stringify(data));
+  } catch (error) {
+    dispatch({
+      type: LOGIN_FAILED,
+      payload: error,
+    });
+  }
   // firebase
   //   .auth()
   //   .signInWithEmailAndPassword(email, password)
@@ -84,6 +108,9 @@ export const login = (email, password) => (dispatch) => {
 };
 
 export const logout = () => (dispatch) => {
+  dispatch({
+    type: LOGOUT,
+  });
   // firebase
   //   .auth()
   //   .signOut()

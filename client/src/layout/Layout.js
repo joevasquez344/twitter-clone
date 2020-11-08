@@ -1,21 +1,20 @@
 import React from "react";
-import {
-  useHistory,
-  BrowserRouter as Router,
-} from "react-router-dom";
+import { useHistory, BrowserRouter as Router } from "react-router-dom";
 import "./Layout.scss";
 
 import Sidebar from "layout/Sidebar";
 import Center from "layout/Center";
 
-import { connect } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { logout } from "redux/auth/auth.actions";
 
-const Layout = ({ logout }) => {
+const Layout = () => {
   const history = useHistory();
 
+  const dispatch = useDispatch();
+
   const handleLogout = () => {
-    logout();
+    dispatch(logout());
     history.push("/landing");
   };
   return (
@@ -37,4 +36,4 @@ const Layout = ({ logout }) => {
   );
 };
 
-export default connect(null, { logout })(Layout);
+export default Layout;

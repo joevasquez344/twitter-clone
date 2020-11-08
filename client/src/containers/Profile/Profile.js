@@ -1,23 +1,25 @@
 import React, { useState, useEffect } from "react";
 import "./Profile.scss";
 
-import { connect } from "react-redux";
-import { getTweets } from "../../redux/tweet/tweet.actions";
+import { useDispatch, useSelector } from "react-redux";
 
 import TweetFeed from "components/tweets/TweetFeed/TweetFeed";
 import UpdateProfileModal from "components/modals/UpdateProfileModal";
+import { getPosts } from "redux/post/post.actions";
 
-const Profile = ({ getTweets, tweets }) => {
+const Profile = () => {
   const [isModalPresent, setIsModalPresent] = useState(false);
+
+  const dispatch = useDispatch();
+  const { posts } = useSelector((state) => state.post);
 
   const hideModal = () => setIsModalPresent(false);
   const showModal = () => setIsModalPresent(true);
 
   useEffect(() => {
-    getTweets();
+    dispatch(getPosts());
   }, []);
 
-  console.log("Tweets: ", tweets);
   return (
     <div className="profile">
       {isModalPresent ? <UpdateProfileModal hideModal={hideModal} /> : null}
@@ -68,13 +70,9 @@ const Profile = ({ getTweets, tweets }) => {
           <li>Likes</li>
         </ul>
       </div>
-      <TweetFeed tweets={tweets} />
+      <TweetFeed posts={posts} />
     </div>
   );
 };
 
-const mapStateToProps = (state) => ({
-  tweets: state.tweet.tweets,
-});
-
-export default connect(mapStateToProps, { getTweets })(Profile);
+export default Profile;

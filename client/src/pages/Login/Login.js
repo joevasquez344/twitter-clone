@@ -1,21 +1,21 @@
 import React, { useState } from "react";
 import "./Login.scss";
 
-import emailValidator from "email-validator";
-import passwordValidator from "password-validator";
-
 import TwitterIcon from "components/icons/TwitterIcon";
 import SignUpModal from "components/modals/SignUpModal/SignUpModal";
 
-import { connect } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { login } from "redux/auth/auth.actions";
 
-const Login = ({ login, error }) => {
+const Login = () => {
   const [isModalPresent, setIsModalPresent] = useState(false);
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleEmail = (e) => setEmail(e.target.value);
+  const dispatch = useDispatch();
+  const { user, isLoading, error } = useSelector((state) => state.auth);
+
+  const handleUsername = (e) => setUsername(e.target.value);
   const handlePassword = (e) => setPassword(e.target.value);
 
   const hideModal = () => setIsModalPresent(false);
@@ -45,7 +45,7 @@ const Login = ({ login, error }) => {
     // }
 
     // login(_email, validatedPassword)
-    login(email, password);
+    dispatch(login(username, password));
   };
 
   return (
@@ -54,10 +54,10 @@ const Login = ({ login, error }) => {
       <h4 className="login-header">Log in to Twitter</h4>
       <form onSubmit={handleLogin} className="login-form">
         <div className="login-form-grouping">
-          <label className="login-label">Email</label>
+          <label className="login-label">username</label>
           <input
-            value={email}
-            onChange={handleEmail}
+            value={username}
+            onChange={handleUsername}
             className="login-input"
             type="text"
           />
@@ -85,8 +85,4 @@ const Login = ({ login, error }) => {
   );
 };
 
-const mapStateToProps = (state) => ({
-  error: state.auth.error,
-});
-
-export default connect(mapStateToProps, { login })(Login);
+export default Login;

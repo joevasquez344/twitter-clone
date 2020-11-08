@@ -1,9 +1,24 @@
-import React from "react";
+import React, { useState } from "react";
 import "./TweetModal.scss";
+import { createPost } from "../../../redux/post/post.actions";
+import { useDispatch } from "react-redux";
 
 import GifIcon from "@material-ui/icons/Gif";
 
-const TweetModal = ({hideModal}) => {
+const TweetModal = ({ hideModal }) => {
+  const [text, setText] = useState("");
+
+  const dispatch = useDispatch();
+
+  const handleChange = (e) => {
+    setText(e.target.value);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    dispatch(createPost(text));
+  };
   return (
     <div className="tweetModal">
       <header>
@@ -15,6 +30,8 @@ const TweetModal = ({hideModal}) => {
         </div>
         <div className="tweetModal__bodyRight">
           <textarea
+            onChange={handleChange}
+            value={text}
             placeholder="What's happening?"
             name=""
             id=""
@@ -34,7 +51,7 @@ const TweetModal = ({hideModal}) => {
               </span>
             </div>
 
-            <button>Tweet</button>
+            <button onClick={handleSubmit}>Tweet</button>
           </div>
         </div>
       </div>

@@ -28,12 +28,11 @@ const App = () => {
     // });
  console.log('State: ', state);
     if(user) {
- 
       history.push('/')
     } else {
       history.push('/landing')
     }
-  }, []);
+  }, [user]);
 
   return (
     <div className="app">

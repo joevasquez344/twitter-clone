@@ -1,26 +1,24 @@
-import React, {useEffect} from "react";
+import React, { useEffect } from "react";
 import "./Home.scss";
 
 import TweetFeed from "components/tweets/TweetFeed";
 import CreateTweet from "components/tweets/CreateTweet";
 
-import { connect } from "react-redux";
-import { getTweets } from "redux/tweet/tweet.actions";
+import { useSelector, useDispatch } from "react-redux";
+import { getPosts } from "redux/post/post.actions";
 
-const Home = ({getTweets, tweets}) => {
+const Home = () => {
+  const dispatch = useDispatch();
+  const { posts } = useSelector((state) => state.post);
   useEffect(() => {
-    getTweets();
+    dispatch(getPosts());
   }, []);
   return (
     <div className="home">
       <CreateTweet />
-      <TweetFeed tweets={tweets} />
+      <TweetFeed posts={posts} />
     </div>
   );
 };
 
-const mapStateToProps = (state) => ({
-  tweets: state.tweet.tweets
-})
-
-export default connect(mapStateToProps, {getTweets})(Home);
+export default Home;
