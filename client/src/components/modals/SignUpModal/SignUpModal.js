@@ -7,15 +7,16 @@ import {register} from 'redux/auth/auth.actions';
 const SignUpModal = ({ hideModal, register }) => {
   const [emailClick, setEmailClick] = useState(true);
   const [passwordClick, setPasswordClick] = useState(false);
-  const [email, setEmail] = useState("");
+  const [handle, setHandle] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleEmailChange = (e) => setEmail(e.target.value);
+  const handleHandleChange = (e) => setHandle(e.target.value);
   const handlePasswordChange = (e) => setPassword(e.target.value);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    register(email, password)
+    const birthday = '12/10/1997'
+    register(handle, password, birthday)
   };
 
   const handleEmailInputClick = () => {
@@ -42,8 +43,8 @@ const SignUpModal = ({ hideModal, register }) => {
           <h4 className="create-account-header">Create your account</h4>
           <form>
             <input
-              value={email}
-              onChange={handleEmailChange}
+              value={handle}
+              onChange={handleHandleChange}
               name="email"
               onClick={handleEmailInputClick}
               type="text"

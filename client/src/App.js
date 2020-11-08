@@ -4,25 +4,35 @@ import "./App.scss";
 
 import firebase from "./firebase/config";
 
-import { connect } from "react-redux";
-import { setUser } from "./redux/auth/auth.actions";
+import { useDispatch, useSelector } from "react-redux";
+// import { setUser } from "./redux/auth/auth.actions";
 
 import Landing from "./pages/Landing/Landing";
 import Login from "./pages/Login/Login";
 import Layout from "./layout";
 
-const App = ({ setUser, user }) => {
+const App = () => {
   const history = useHistory();
+  const dispatch = useDispatch();
+  const { user, isLoading, error } = useSelector((state) => state.auth);
+  const state = useSelector((state) => console.log(state));
 
   useEffect(() => {
-    firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        setUser(user);
-        history.push("/");
-      } else {
-        history.push("/landing");
-      }
-    });
+    // firebase.auth().onAuthStateChanged((user) => {
+    //   if (user) {
+    //     setUser(user);
+    //     history.push("/");
+    //   } else {
+    //     history.push("/landing");
+    //   }
+    // });
+ console.log('State: ', state);
+    if(user) {
+ 
+      history.push('/')
+    } else {
+      history.push('/landing')
+    }
   }, []);
 
   return (
@@ -55,12 +65,8 @@ const App = ({ setUser, user }) => {
   );
 };
 
-const mapStateToProps = (state) => ({
-  isLoading: state.auth.isLoading,
-  user: state.auth.user,
-});
 
 // const AppWithAuth = withRouter(connect(mapStateToProps, { setUser })(App));
 
 // export default AppWithAuth;
-export default connect(mapStateToProps, { setUser })(App);
+export default App;
