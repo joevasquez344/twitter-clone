@@ -7,7 +7,6 @@ const {
   register,
   getUsers,
   getUserById,
-  getLoggedInProfile,
   updateProfile,
 } = require("../controller/users.controller");
 
@@ -22,5 +21,5 @@ router
   // .get(protect, getLoggedInProfile)
   .put(protect, updateProfile);
 
-  router.get('/profile/:id', protect, getLoggedInProfile);
+  // router.get('/profile/:id', protect, getLoggedInProfile);
 module.exports = router;

@@ -1,4 +1,5 @@
 const User = require("../models/User");
+const Post = require("../models/Post");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const asyncHandler = require("express-async-handler");
@@ -87,41 +88,20 @@ const getUsers = asyncHandler(async (req, res) => {
 // @access  Private
 const getUserById = asyncHandler(async (req, res) => {
   const user = await User.findById(req.params.id).select("-password");
-  console.log(req.user);
+  const posts = await Post.find({ user: req.params.id });
+
+  console.log("Posts: ", posts);
 
   if (user) {
+    user.posts = posts;
+
+    await user.save();
+
     res.status(200).json(user);
   } else {
     res.status(404);
     throw new Error("User not found");
   }
-});
-
-// @desc    Get Logged In User's Profile
-// @route   GET /api/users/profile
-// @access  Private
-const getLoggedInProfile = asyncHandler(async (req, res) => {
-  console.log("User from getProfile: ");
-  const user = await User.findById(req.user._id);
-
-  res.json(user);
-
-  //   if (user) {
-  //     res.json({
-  //       _id: user._id,
-  //       name: user.name,
-  //       bio: user.bio,
-  //       handle: user.handle,
-  //       birthday: user.birthday,
-  //       location: user.location,
-  //       website: user.website,
-  //       following: user.following,
-  //       followers: user.followers,
-  //     });
-  //   } else {
-  //     res.status(404);
-  //     throw new Error("User not found");
-  //   }
 });
 
 // @desc    Update User Profile
@@ -166,6 +146,5 @@ module.exports = {
   register,
   getUsers,
   getUserById,
-  getLoggedInProfile,
   updateProfile,
 };

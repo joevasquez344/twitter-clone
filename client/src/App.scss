@@ -3,3 +3,7 @@
 .app {
   background: $twitter-navy;
 }
+
+textarea:focus {
+  outline: none;
+}

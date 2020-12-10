@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./TweetModal.scss";
 import { createPost } from "../../../redux/post/post.actions";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import GifIcon from "@material-ui/icons/Gif";
 
@@ -9,6 +9,7 @@ const TweetModal = ({ hideModal }) => {
   const [text, setText] = useState("");
 
   const dispatch = useDispatch();
+  const { isLoading } = useSelector((state) => state.post);
 
   const handleChange = (e) => {
     setText(e.target.value);
@@ -16,8 +17,9 @@ const TweetModal = ({ hideModal }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
+    console.log('Text: ', text)
     dispatch(createPost(text));
+    hideModal();
   };
   return (
     <div className="tweetModal">

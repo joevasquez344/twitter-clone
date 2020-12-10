@@ -1,5 +1,6 @@
 const users = require("./data/users");
 const User = require("./models/User");
+const Post = require('./models/Post');
 const connectDB = require("./config/db");
 const dotenv = require("dotenv");
 const colors = require("colors");
@@ -25,6 +26,7 @@ const importData = async () => {
 const destroyData = async () => {
   try {
     await User.deleteMany();
+    await Post.deleteMany();
 
     console.log("Data Destroyed".red.inverse);
     process.exit();

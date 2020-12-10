@@ -1,4 +1,5 @@
 @import "../../../scss/1-helpers/variables";
+@import "../../../scss/1-helpers/mixins";
 
 .createTweet {
   background: $twitter-navy;
@@ -44,21 +45,15 @@
       &Bottom {
         border-top: 1px solid gray;
         height: 60px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
+        @include space_between;
 
         .createTweet__iconsWrap {
-          display: flex;
-          align-items: center;
+          @include centerX;
           span {
             color: $twitter-blue;
             margin-right: 15px;
             font-size: 10px;
             padding: 5px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
 
             cursor: pointer;
             border-radius: 50%;
@@ -68,21 +63,15 @@
               padding: 7px;
             }
             &:hover {
-              background-color: rgba($color: $twitter-blue, $alpha: 0.2);
+              background-color: $blue-glow;
             }
           }
         }
 
         button {
-          background: $twitter-blue;
-          border-radius: 500px;
-          color: white;
-          font-weight: bold;
-          border: none;
+          @include blue_btn;
+          @include center;
           padding: 7px 15px;
-          display: flex;
-          justify-content: center;
-          align-items: center;
         }
       }
     }

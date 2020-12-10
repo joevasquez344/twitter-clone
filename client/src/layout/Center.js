@@ -1,6 +1,12 @@
 import React from "react";
 import routes from "../routes";
-import { Switch, Route, HashRouter, BrowserRouter as Router, Redirect } from "react-router-dom";
+import {
+  Switch,
+  Route,
+  HashRouter,
+  BrowserRouter as Router,
+  Redirect,
+} from "react-router-dom";
 
 import Home from "containers/Home/Home";
 
@@ -28,7 +34,6 @@ class Center extends React.Component {
               />
             );
           })}
-       
         </Switch>
       </div>
     );
@@ -37,6 +42,7 @@ class Center extends React.Component {
 
 const styles = {
   centerLayout: {
+    overflowY: "scroll",
     borderLeft: "1px solid #38444d",
     borderRight: "1px solid #38444d",
   },

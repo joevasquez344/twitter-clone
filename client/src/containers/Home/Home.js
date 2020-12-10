@@ -9,14 +9,16 @@ import { getPosts } from "redux/post/post.actions";
 
 const Home = () => {
   const dispatch = useDispatch();
-  const { posts } = useSelector((state) => state.post);
+  const { posts, isLoading } = useSelector((state) => state.post);
   useEffect(() => {
     dispatch(getPosts());
   }, []);
   return (
     <div className="home">
       <CreateTweet />
-      <TweetFeed posts={posts} />
+      {
+        isLoading ? <h1>Loading</h1> : <TweetFeed posts={posts} />
+      }
     </div>
   );
 };

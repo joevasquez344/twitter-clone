@@ -2,4 +2,7 @@ $twitter-blue: #1da1f2;
 $twitter-navy: #15202b;
 $twitter-gray: #38444d;
 
-
+$blue-glow: rgba(
+  $color: $twitter-blue,
+  $alpha: 0.2,
+);

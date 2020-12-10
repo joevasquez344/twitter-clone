@@ -2,6 +2,9 @@ import firebase from "../../firebase/config";
 import axios from "axios";
 
 import {
+  REQUEST_SENT,
+  USER_DETAILS_SUCCESS,
+  USER_DETAILS_FAILED,
   REGISTER_SUCCESS,
   REGISTER_FAILED,
   SET_USER,
@@ -19,23 +22,6 @@ import {
 // };
 
 export const register = (handle, password, birthday) => async (dispatch) => {
-  // firebase
-  //   .auth()
-  //   .createUserWithEmailAndPassword(email, password)
-  //   .then((user) => {
-  //     dispatch({
-  //       type: REGISTER_SUCCESS,
-  //       payload: { user: user.user.uid, email: user.user.email },
-  //     });
-  //   })
-  //   .catch((err) => {
-  //     console.log(err);
-  //     dispatch({
-  //       type: REGISTER_FAILED,
-  //       payload: err.message,
-  //     });
-  //   });
-
   const body = { handle, password, birthday };
 
   const config = {
@@ -52,6 +38,8 @@ export const register = (handle, password, birthday) => async (dispatch) => {
       type: REGISTER_SUCCESS,
       payload: data,
     });
+
+    localStorage.setItem("user", JSON.stringify(data));
   } else {
     dispatch({
       type: REGISTER_FAILED,
@@ -123,4 +111,33 @@ export const logout = () => (dispatch) => {
   //   .catch((err) => {
   //     console.log(err);
   //   });
+};
+
+export const getUserDetails = (id) => async (dispatch, getState) => {
+  console.log('User Id from actions: ', id)
+  try {
+    dispatch({
+      type: REQUEST_SENT,
+    });
+    const token = getState().auth.user.token;
+    console.log('Token from action', token)
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    const {data} = await axios.get(`/api/users/${id}`, config);
+    console.log('User Details from action', data)
+
+    dispatch({
+      type: USER_DETAILS_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: USER_DETAILS_FAILED,
+      payload: "User Not Found",
+    });
+  }
 };

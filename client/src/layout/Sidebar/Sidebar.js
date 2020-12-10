@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import "./Sidebar.scss";
 import { useHistory } from "react-router-dom";
 
+import { useSelector } from "react-redux";
+
 import TwitterIcon from "components/icons/TwitterIcon";
 import DownArrowIcon from "components/icons/DownArrowIcon";
 import TweetModal from "components/modals/TweetModal/TweetModal";
@@ -9,8 +11,12 @@ import TweetModal from "components/modals/TweetModal/TweetModal";
 const Sidebar = () => {
   const [isModalPresent, setIsModalPresent] = useState(false);
 
+  const { isLoading } = useSelector((state) => state.post);
+
   const showModal = () => setIsModalPresent(true);
-  const hideModal = () => setIsModalPresent(false);
+  const hideModal = () => {
+    setIsModalPresent(false);
+  };
 
   const history = useHistory();
 

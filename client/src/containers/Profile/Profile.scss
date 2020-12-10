@@ -5,34 +5,31 @@
   &__banner {
     height: 25vh;
     background: gray;
+    height: "25vh";
+    background: gray;
   }
 
   &__config {
     position: relative;
     height: 100px;
+
     img {
-      width: 150px;
-      height: 150px;
-      border-radius: 500px;
-      background: $twitter-blue;
       position: relative;
       top: -75px;
       left: 15px;
+      @include profileImageLarge;
     }
+
     .profile__editBtn {
       position: absolute;
       right: 15px;
       top: 10px;
-      border: 1px solid $twitter-blue;
-      border-radius: 500px;
-      background: transparent;
-      color: $twitter-blue;
       padding: 7px 15px;
-      font-weight: bold;
+      @include transparent-btn;
       @include transition;
 
       &:hover {
-        background-color: rgba($color: $twitter-blue, $alpha: 0.05);
+        background: $blue-glow;
       }
     }
   }
@@ -86,25 +83,40 @@
   }
 
   &__tabs {
-      border-bottom: 1px solid $twitter-gray;
+    border-bottom: 1px solid $twitter-gray;
     ul {
       display: flex;
       justify-content: space-evenly;
 
-      li {
+      .profile__tab {
+        width: 100%;
+        height: 50px;
         color: lightgray;
         font-weight: bold;
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 50px;
         cursor: pointer;
+        @include center;
         @include transition;
 
         &:hover {
-        background-color: rgba($color: $twitter-blue, $alpha: 0.2);
-            color: $twitter-blue;
+          background-color: $blue-glow;
+          color: $twitter-blue;
+        }
+      }
+
+      .profile__tab--active {
+        width: 100%;
+        height: 50px;
+        background: transparent;
+        border-bottom: 2px solid $twitter-blue;
+        color: $twitter-blue;
+        font-weight: bold;
+        cursor: pointer;
+        @include center;
+        @include transition;
+
+        &:hover {
+          background-color: $blue-glow;
+          color: $twitter-blue;
         }
       }
     }

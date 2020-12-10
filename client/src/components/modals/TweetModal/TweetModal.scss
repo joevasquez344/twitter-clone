@@ -40,19 +40,16 @@
     &Right {
       padding-top: 15px;
       width: 90%;
+
       textarea {
         background: transparent;
         border: none;
         color: white;
         font-size: 1.1rem;
-        width: 100%;
 
         &::placeholder {
           color: rgba(211, 211, 211, 0.692);
           font-size: 1.1rem;
-        }
-        &:focus {
-          outline: none;
         }
       }
 

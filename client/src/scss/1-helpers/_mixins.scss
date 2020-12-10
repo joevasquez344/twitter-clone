@@ -1,3 +1,65 @@
 @mixin transition {
   transition: 0.1s linear all;
 }
+
+@mixin profileImageSmall {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: dodgerblue;
+}
+
+@mixin profileImageMedium {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: dodgerblue;
+}
+
+@mixin profileImageLarge {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: $twitter-blue;
+}
+
+// Spacing
+@mixin center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@mixin centerX {
+  display: flex;
+  align-items: center;
+}
+
+@mixin centerY {
+  display: flex;
+  justify-content: center;
+}
+
+@mixin space_between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+// Buttons
+@mixin blue_btn {
+  background: $twitter-blue;
+  border-radius: 500px;
+  color: white;
+  font-weight: bold;
+  border: none;
+}
+
+@mixin transparent_btn {
+  background: transparent;
+  border-radius: 500px;
+  color: $twitter-blue;
+  font-weight: bold;
+  border: none;
+  border: 1px solid $twitter-blue;
+}

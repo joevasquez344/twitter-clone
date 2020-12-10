@@ -14,15 +14,13 @@
   height: 70vh;
 
   header {
-    display: flex;
-    align-items: center;
+    @include centerX;
     height: 5vh;
     z-index: 5;
     border-bottom: 1px solid $twitter-gray;
     position: sticky;
     background: $twitter-navy;
     padding: 0 20px;
-    width: 100%;
     top: 0;
     i {
       color: $twitter-blue;
@@ -81,6 +79,7 @@
       }
     }
   }
+  
   form {
     padding: 20px;
 
@@ -90,11 +89,13 @@
       border-bottom: 2px solid gray;
       display: flex;
       flex-direction: column;
+
       label {
         color: gray;
         padding: 0 10px;
         margin: 0;
       }
+
       input {
         background: transparent;
         border: none;
@@ -129,6 +130,7 @@
         padding: 0 10px;
         margin: 0;
       }
+
       input {
         background: transparent;
         border: none;

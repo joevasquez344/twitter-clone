@@ -31,18 +31,36 @@ const userSchema = mongoose.Schema({
   website: {
     type: String,
   },
-  //   following: [
-  //     {
-  //       type: mongoose.Schema.Types.ObjectId,
-  //       ref: "User",
-  //     },
-  //   ],
-  //   followers: [
-  //     {
-  //       type: mongoose.Schema.Types.ObjectId,
-  //       ref: "User",
-  //     },
-  //   ],
+  following: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+  ],
+  followers: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+  ],
+  posts: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Post",
+    },
+  ],
+  comments: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Post",
+    },
+  ],
+  likes: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Post",
+    },
+  ],
 });
 
 const User = mongoose.model("User", userSchema);
