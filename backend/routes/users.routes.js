@@ -8,6 +8,7 @@ const {
   getUsers,
   getUserById,
   updateProfile,
+  getUsersLikedPosts,
 } = require("../controller/users.controller");
 
 router.route("/").post(register).get(protect, getUsers);
@@ -21,5 +22,7 @@ router
   // .get(protect, getLoggedInProfile)
   .put(protect, updateProfile);
 
-  // router.get('/profile/:id', protect, getLoggedInProfile);
+router.route("/:id/likes").get(protect, getUsersLikedPosts);
+
+// router.get('/profile/:id', protect, getLoggedInProfile);
 module.exports = router;

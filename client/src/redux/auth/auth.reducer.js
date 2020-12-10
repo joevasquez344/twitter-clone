@@ -9,6 +9,7 @@ import {
   LOGOUT,
   USER_DETAILS_FAILED,
   USER_DETAILS_SUCCESS,
+  GET_USERS_LIKED_POSTS,
 } from "./auth.types";
 
 const initialState = {
@@ -79,9 +80,16 @@ export default (state = initialState, action) => {
     case USER_DETAILS_FAILED:
       return {
         ...state,
-        loading: false,
+        isLoading: false,
         userDetails: null,
         error: payload,
+      };
+    case GET_USERS_LIKED_POSTS:
+      return {
+        ...state,
+        isLoading: false,
+        userDetails: { ...state.userDetails, likes: payload },
+        error: null,
       };
 
     default:

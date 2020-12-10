@@ -71,7 +71,9 @@ const Tweet = ({ post }) => {
               ) : (
                 <i class="far fa-heart"></i>
               )}{" "}
-              <span style={likeValue}>{likeCounter === 0 ? "" : likeCounter}</span>
+              <span style={likeValue}>
+                {likeCounter === 0 ? "" : likeCounter}
+              </span>
             </li>
             <li>
               <i class="fas fa-external-link-alt"></i>

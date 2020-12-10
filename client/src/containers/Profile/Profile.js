@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import TweetFeed from "components/tweets/TweetFeed/TweetFeed";
 import UpdateProfileModal from "components/modals/UpdateProfileModal";
-import { getUserDetails } from "redux/auth/auth.actions";
+import { getUserDetails, getUsersLikedPosts } from "redux/auth/auth.actions";
 
 const Profile = ({ match }) => {
   const [isModalPresent, setIsModalPresent] = useState(false);
@@ -61,12 +61,30 @@ const Profile = ({ match }) => {
     setTabs(updatedTabs);
   };
 
+  // BACKEND WORK - TODO
+  // Create new routes that target specifics, such as getUsersPosts, getUsersLikedPosts (already done), getUsersMedia, etc.
+  // Every one of these end points will give a rerender for the TweetFeed component
+  // This will help keep up to date with new user data
+
+  // FRONTEND WORK - TODO
+  // When the Profile components mounts, check to see which tab is active... fetch data according to the tab status
+  // (tweets - getUsersTweets, likes - getUsersLikedPosts, etc.)
+
+  // Once the Profile component mounts and the tab status checker has ran, for every tab click after, check to see if state has changed and rerender
+  // if there is new data
+
+  // Keep in mind, whenever a new tab is active/clicked, no matter what, fetch relevant data from the DB, and check to see if that recent data fetched 
+  // is different from the current state of your redux store, if so, rerender with the new data, if not dont rerender and keep 
+  // current state
+  // PURPOSE - Eliminates unnecessary rerenders and helps perfomance
+
   const renderTabContent = () => {
     const activeTab = tabs.find((tab) => tab.isActive === true);
     if (activeTab.label === "Tweets") {
-      return <TweetFeed posts={userDetails.posts} />;
+      return <TweetFeed isLoading={isLoading} posts={userDetails.posts} />;
     } else if (activeTab.label === "Likes") {
-      return <TweetFeed posts={userDetails.likes} />;
+      dispatch(getUsersLikedPosts(match.params.id));
+      return <TweetFeed isLoading={isLoading} posts={userDetails.likes} />;
     }
   };
 

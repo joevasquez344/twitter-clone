@@ -6,21 +6,22 @@ import Tweet from "components/tweets/Tweet/Tweet.js";
 import { useDispatch, useSelector } from "react-redux";
 import { getPosts } from "../../../redux/post/post.actions";
 
-const TweetFeed = ({ posts }) => {
+const TweetFeed = ({ posts, isLoading }) => {
   console.log("Tweets from feed: ", posts);
 
-  const dispatch = useDispatch();
-
-  // useEffect(() => {
-  //   dispatch(getPosts());
-  // }, []);
-
   return (
-    <div className="tweet-feed">
-      {posts.map((post) => {
-        return <Tweet post={post} />;
-      })}
-    </div>
+    <>
+      {" "}
+      {isLoading ? (
+        <h1>Loading</h1>
+      ) : (
+        <div className="tweet-feed">
+          {posts.map((post) => {
+            return <Tweet post={post} />;
+          })}
+        </div>
+      )}{" "}
+    </>
   );
 };
 

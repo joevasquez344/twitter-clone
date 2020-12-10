@@ -11,6 +11,7 @@ import {
   LOGIN_SUCCESS,
   LOGIN_FAILED,
   LOGOUT,
+  GET_USERS_LIKED_POSTS,
 } from "./auth.types";
 
 // export const setUser = (user) => (dispatch) => {
@@ -114,21 +115,21 @@ export const logout = () => (dispatch) => {
 };
 
 export const getUserDetails = (id) => async (dispatch, getState) => {
-  console.log('User Id from actions: ', id)
+  console.log("User Id from actions: ", id);
   try {
     dispatch({
       type: REQUEST_SENT,
     });
     const token = getState().auth.user.token;
-    console.log('Token from action', token)
+    console.log("Token from action", token);
     const config = {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     };
 
-    const {data} = await axios.get(`/api/users/${id}`, config);
-    console.log('User Details from action', data)
+    const { data } = await axios.get(`/api/users/${id}`, config);
+    console.log("User Details from action", data);
 
     dispatch({
       type: USER_DETAILS_SUCCESS,
@@ -140,4 +141,29 @@ export const getUserDetails = (id) => async (dispatch, getState) => {
       payload: "User Not Found",
     });
   }
+};
+
+export const getUsersLikedPosts = (id) => async (dispatch, getState) => {
+ try {
+  dispatch({
+    type: REQUEST_SENT,
+  });
+  
+  const token = getState().auth.user.token;
+  console.log("Token from action", token);
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  const { data } = await axios.get(`/api/users/${id}/likes`, config);
+
+  dispatch({
+    type: GET_USERS_LIKED_POSTS,
+    payload: data,
+  });
+ } catch (error) {
+   console.log(error)
+ }
 };
