@@ -81,6 +81,14 @@ const Profile = ({ match }) => {
   // current state
   // PURPOSE - Eliminates unnecessary rerenders and helps perfomance
 
+  // FINAL NOTE FOR THESE COMMENTS
+  // Think about this more because there are better ways
+  // Tweak backend getUserDetails endpoint to return less data than needed
+  // Only return users tweets instead of the whole userDetails object
+  // You will fetch more of this users data when you interact more with his/her profile
+  // ( Maybe this is the wave of the data fetching flow with web development?? )
+  // ( I feel like sending back a huge object based on a profile fetch isn't the move )
+
   const renderTabContent = () => {
     const activeTab = tabs.find((tab) => tab.isActive === true);
     if (activeTab.label === "Tweets") {
