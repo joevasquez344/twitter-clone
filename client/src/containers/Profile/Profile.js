@@ -70,7 +70,7 @@ const Profile = ({ match }) => {
   // When the Profile components mounts, check to see which tab is active... fetch data according to the tab status
   // (tweets - getUsersTweets, likes - getUsersLikedPosts, etc.)
 
-  // Once the Profile component mounts and the tab status checker has ran, for every tab click after, check to see if state has changed and rerender
+  // Once the Profile component mounts and the tab status checker has ran, for every tab click after, fetch related data and check to see if state has changed, then rerender
   // if there is new data
 
   // Keep in mind, whenever a new tab is active/clicked, no matter what, fetch relevant data from the DB, and check to see if that recent data fetched 
