@@ -65,12 +65,15 @@ const Profile = ({ match }) => {
   // Create new routes that target specifics, such as getUsersPosts, getUsersLikedPosts (already done), getUsersMedia, etc.
   // Every one of these end points will give a rerender for the TweetFeed component
   // This will help keep up to date with new user data
+  // EXAMPLE: Say you click on another users profile... you would have that users current data at that time, but say 
+  // you have been idle for 10 minutes on that users profile and that user has been tweeting and liking posts in the mean time, you would be 
+  // able to have this users new/updated data if you click on the tabs: tweets, likes, etc. due to fetching this data every time you click on those tabs
 
   // FRONTEND WORK - TODO
   // When the Profile components mounts, check to see which tab is active... fetch data according to the tab status
   // (tweets - getUsersTweets, likes - getUsersLikedPosts, etc.)
 
-  // Once the Profile component mounts and the tab status checker has ran, for every tab click after, fetch related data and check to see if state has changed, then rerender
+  // Once the Profile component mounts and the tab status checker has ran, for every tab click after, fetch data based on tab status and check to see if state has changed, then rerender
   // if there is new data
 
   // Keep in mind, whenever a new tab is active/clicked, no matter what, fetch relevant data from the DB, and check to see if that recent data fetched 
