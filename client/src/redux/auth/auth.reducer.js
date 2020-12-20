@@ -9,7 +9,9 @@ import {
   LOGOUT,
   USER_DETAILS_FAILED,
   USER_DETAILS_SUCCESS,
+  GET_USERS_POSTS,
   GET_USERS_LIKED_POSTS,
+  GET_FOLLOWERS,
 } from "./auth.types";
 
 const initialState = {
@@ -76,6 +78,7 @@ export default (state = initialState, action) => {
         ...state,
         isLoading: false,
         userDetails: payload,
+        error: null,
       };
     case USER_DETAILS_FAILED:
       return {
@@ -84,6 +87,13 @@ export default (state = initialState, action) => {
         userDetails: null,
         error: payload,
       };
+    case GET_USERS_POSTS:
+      return {
+        ...state,
+        isLoading: false,
+        userDetails: { ...state.userDetails, posts: payload },
+        error: null,
+      };
     case GET_USERS_LIKED_POSTS:
       return {
         ...state,
@@ -91,6 +101,14 @@ export default (state = initialState, action) => {
         userDetails: { ...state.userDetails, likes: payload },
         error: null,
       };
+
+      case GET_FOLLOWERS: 
+      return {
+        ...state,
+        isLoading: false,
+        userDetails: {...state.userDetails, followers: payload},
+        error: null
+      }
 
     default:
       return state;

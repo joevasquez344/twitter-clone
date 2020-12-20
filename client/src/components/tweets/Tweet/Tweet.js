@@ -19,7 +19,7 @@ const Tweet = ({ post }) => {
 
   const handleUserDetails = () => {
     console.log("Post from tweet", post);
-    history.push(`/user/${post.user._id}`);
+    history.push(`/user/${post.user}`);
   };
 
   const handleLike = () => {

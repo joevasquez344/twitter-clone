@@ -1,0 +1,46 @@
+@import "../../scss/1-helpers/variables";
+@import "../../scss/1-helpers/mixins";
+
+
+
+.friends {
+  &__header {
+    display: flex;
+    height: 6vh;
+    border-bottom: 2px solid $twitter-gray;
+
+    span {
+      width: 50%;
+      color: gray;
+      font-weight: bold;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+
+  &__item {
+    padding: 15px;
+    color: white;
+
+    &-top {
+      display: flex;
+      justify-content: space-between;
+
+      img {
+          border: 1px solid red;
+          width: 60px;
+          height: 60px;
+          margin-right: 10px;
+      }
+
+      div {
+          margin-right: auto;
+      }
+
+      span {
+        margin-right: 10px;
+      }
+    }
+  }
+}

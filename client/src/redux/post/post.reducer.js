@@ -1,4 +1,10 @@
-import { GET_POSTS, CREATE_POST, REQUEST_SENT, LIKE_POST, UNLIKE_POST } from "./post.types";
+import {
+  GET_POSTS,
+  CREATE_POST,
+  REQUEST_SENT,
+  LIKE_POST,
+  UNLIKE_POST,
+} from "./post.types";
 
 const initialState = {
   posts: [],
@@ -22,7 +28,7 @@ export default (state = initialState, action) => {
     case CREATE_POST:
       return {
         ...state,
-        posts: [...state.posts, payload],
+        posts: [payload, ...state.posts],
         isLoading: false,
       };
     case LIKE_POST:

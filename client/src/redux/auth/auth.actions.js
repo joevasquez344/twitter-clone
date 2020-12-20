@@ -11,7 +11,9 @@ import {
   LOGIN_SUCCESS,
   LOGIN_FAILED,
   LOGOUT,
+  GET_USERS_POSTS,
   GET_USERS_LIKED_POSTS,
+  GET_FOLLOWERS,
 } from "./auth.types";
 
 // export const setUser = (user) => (dispatch) => {
@@ -62,12 +64,14 @@ export const login = (handle, password) => async (dispatch) => {
     };
     const { data, status } = await axios.post("/api/users/login", body, config);
 
+    const user = data;
+
     dispatch({
       type: LOGIN_SUCCESS,
-      payload: data,
+      payload: user,
     });
 
-    localStorage.setItem("user", JSON.stringify(data));
+    localStorage.setItem("user", JSON.stringify(user));
   } catch (error) {
     dispatch({
       type: LOGIN_FAILED,
@@ -100,6 +104,8 @@ export const logout = () => (dispatch) => {
   dispatch({
     type: LOGOUT,
   });
+
+  localStorage.removeItem("user");
   // firebase
   //   .auth()
   //   .signOut()
@@ -120,8 +126,11 @@ export const getUserDetails = (id) => async (dispatch, getState) => {
     dispatch({
       type: REQUEST_SENT,
     });
+
     const token = getState().auth.user.token;
+
     console.log("Token from action", token);
+
     const config = {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -143,27 +152,76 @@ export const getUserDetails = (id) => async (dispatch, getState) => {
   }
 };
 
-export const getUsersLikedPosts = (id) => async (dispatch, getState) => {
- try {
-  dispatch({
-    type: REQUEST_SENT,
-  });
-  
-  const token = getState().auth.user.token;
-  console.log("Token from action", token);
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
+export const getUsersPosts = (userID) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: REQUEST_SENT,
+    });
 
-  const { data } = await axios.get(`/api/users/${id}/likes`, config);
+    const token = getState().auth.user.token;
 
-  dispatch({
-    type: GET_USERS_LIKED_POSTS,
-    payload: data,
-  });
- } catch (error) {
-   console.log(error)
- }
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    const { data } = await axios.get(`/api/users/${userID}/posts`, config);
+
+    const posts = data;
+
+    dispatch({
+      type: GET_USERS_POSTS,
+      payload: posts,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getUsersLikedPosts = (userID) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: REQUEST_SENT,
+    });
+
+    const token = getState().auth.user.token;
+    console.log("Token from action", token);
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    const { data } = await axios.get(`/api/users/${userID}/likes`, config);
+
+    dispatch({
+      type: GET_USERS_LIKED_POSTS,
+      payload: data,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getFollowers = (id) => async (dispatch, getState) => {
+  try {
+    const token = getState().auth.user.token;
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    const followers = await axios.get(`/api/user/${id}/followers`, config);
+
+    dispatch({
+      type: GET_FOLLOWERS,
+      payload: followers,
+    });
+    
+  } catch (error) {
+    console.log(error);
+  }
 };

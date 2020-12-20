@@ -16,7 +16,7 @@ class Center extends React.Component {
   }
   render() {
     return (
-      <div style={styles.centerLayout}>
+      <div style={styles.overflow}>
         {/* <Home /> */}
 
         <Switch>
@@ -41,7 +41,7 @@ class Center extends React.Component {
 }
 
 const styles = {
-  centerLayout: {
+  overflow: {
     overflowY: "scroll",
     borderLeft: "1px solid #38444d",
     borderRight: "1px solid #38444d",

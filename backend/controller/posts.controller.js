@@ -6,11 +6,9 @@ const asyncHandler = require("express-async-handler");
 // @route   GET /api/posts
 // @access  Private
 const getPosts = asyncHandler(async (req, res) => {
-  const posts = await Post.find({}).populate("user");
+  const posts = await Post.find({});
 
-  console.log(posts);
-
-  res.json(posts);
+  res.json(posts.reverse());
 });
 
 // @desc    Create Post
@@ -32,7 +30,7 @@ const createPost = asyncHandler(async (req, res) => {
 // @route   GET /api/posts/:id
 // @access  Private
 const getPostById = asyncHandler(async (req, res) => {
-  const post = await Post.findByIdAndDelete(req.params.id);
+  const post = await Post.findById(req.params.id);
   if (post) {
     res.json(post);
   }
@@ -51,17 +49,11 @@ const deletePost = asyncHandler(async (req, res) => {
 // @route   PUT /api/posts/like/:id
 // @access  Private
 const likePost = asyncHandler(async (req, res) => {
-  const post = await Post.findById(req.params.id).populate({
-    path: "likes",
-    populate: {
-      path: "user",
-      select: "-password",
-    },
-  });
+  const post = await Post.findById(req.params.id);
   console.log("Likes - Post: ", post);
 
   if (
-    post.likes.filter((like) => like.user._id.toString() === req.user.id).length > 0
+    post.likes.filter((like) => like.user.toString() === req.user.id).length > 0
   ) {
     return res.status(400).json({ message: "Post already liked" });
   }
@@ -69,6 +61,7 @@ const likePost = asyncHandler(async (req, res) => {
   post.likes.unshift({ user: req.user.id });
 
   const user = await User.findById(req.user.id);
+  console.log("Post Likes: ", post.likes);
 
   user.likes = [...user.likes, post];
 
@@ -83,21 +76,27 @@ const likePost = asyncHandler(async (req, res) => {
 // @access  Private
 const unlikePost = asyncHandler(async (req, res) => {
   const post = await Post.findById(req.params.id);
+  const user = await User.findById(req.user.id);
 
   if (
-    post.likes.filter((like) => like.user._id.toString() === req.user.id).length ===
-    0
+    post.likes.filter((like) => like.user._id.toString() === req.user.id)
+      .length === 0
   ) {
     return res.status(400).json({ message: "Post has not yet been liked" });
   }
 
   const removeIndex = post.likes
-    .map((like) => like.user._id.toString())
+    .map((like) => like.user.toString())
     .indexOf(req.user.id);
 
   post.likes.splice(removeIndex, 1);
 
+  const removeIndexFromUsersLikes = user.likes.indexOf(req.params.id);
+
+  user.likes.splice(removeIndexFromUsersLikes, 1);
+
   await post.save();
+  await user.save();
 
   res.json(post.likes);
 });

@@ -3,9 +3,17 @@ import "./Profile.scss";
 
 import { useDispatch, useSelector } from "react-redux";
 
+import { useHistory } from "react-router-dom";
+
 import TweetFeed from "components/tweets/TweetFeed/TweetFeed";
+import Header from "layout/Header";
 import UpdateProfileModal from "components/modals/UpdateProfileModal";
-import { getUserDetails, getUsersLikedPosts } from "redux/auth/auth.actions";
+import {
+  getUserDetails,
+  getUsersPosts,
+  getUsersLikedPosts,
+  getFollowers,
+} from "redux/auth/auth.actions";
 
 const Profile = ({ match }) => {
   const [isModalPresent, setIsModalPresent] = useState(false);
@@ -33,6 +41,8 @@ const Profile = ({ match }) => {
     },
   ]);
 
+  const history = useHistory();
+
   const dispatch = useDispatch();
   // const { posts } = useSelector((state) => state.post);
   const { userDetails, isLoading } = useSelector((state) => state.auth);
@@ -40,15 +50,15 @@ const Profile = ({ match }) => {
   const hideModal = () => setIsModalPresent(false);
   const showModal = () => setIsModalPresent(true);
 
-  const getUserLikes = () => userDetails.likes;
-  const getUserTweets = () => userDetails.posts;
-
   const handleTabClick = (id) => {
     const currentActiveTab = tabs.find((tab) => tab.isActive === true);
+
+    let newActiveTab = null;
 
     const updatedTabs = tabs.map((tab) => {
       if (tab.id === id) {
         tab.isActive = true;
+        newActiveTab = tab;
       } else if (currentActiveTab && tab.id === currentActiveTab.id) {
         tab.isActive = false;
       }
@@ -56,17 +66,25 @@ const Profile = ({ match }) => {
       return tab;
     });
 
-    console.log("Updated Tabs: ", updatedTabs);
-
+    if (newActiveTab.label === "Tweets") {
+      dispatch(getUserDetails(match.params.id));
+    } else if (newActiveTab.label === "Likes") {
+      dispatch(getUserDetails(match.params.id));
+    }
     setTabs(updatedTabs);
+  };
+
+  const handleFollowers = () => {
+    dispatch(getFollowers(match.params.id));
+    history.push(`/user/${match.params.id}/followers`)
   };
 
   // BACKEND WORK - TODO
   // Create new routes that target specifics, such as getUsersPosts, getUsersLikedPosts (already done), getUsersMedia, etc.
   // Every one of these end points will give a rerender for the TweetFeed component
   // This will help keep up to date with new user data
-  // EXAMPLE: Say you click on another users profile... you would have that users current data at that time, but say 
-  // you have been idle for 10 minutes on that users profile and that user has been tweeting and liking posts in the mean time, you would be 
+  // EXAMPLE: Say you click on another users profile... you would have that users current data at that time, but say
+  // you have been idle for 10 minutes on that users profile and that user has been tweeting and liking posts in the mean time, you would be
   // able to have this users new/updated data if you click on the tabs: tweets, likes, etc. due to fetching this data every time you click on those tabs
 
   // FRONTEND WORK - TODO
@@ -76,8 +94,8 @@ const Profile = ({ match }) => {
   // Once the Profile component mounts and the tab status checker has ran, for every tab click after, fetch data based on tab status and check to see if state has changed, then rerender
   // if there is new data
 
-  // Keep in mind, whenever a new tab is active/clicked, no matter what, fetch relevant data from the DB, and check to see if that recent data fetched 
-  // is different from the current state of your redux store, if so, rerender with the new data, if not dont rerender and keep 
+  // Keep in mind, whenever a new tab is active/clicked, no matter what, fetch relevant data from the DB, and check to see if that recent data fetched
+  // is different from the current state of your redux store, if so, rerender with the new data, if not dont rerender and keep
   // current state
   // PURPOSE - Eliminates unnecessary rerenders and helps perfomance
 
@@ -85,6 +103,8 @@ const Profile = ({ match }) => {
   // Think about this more because there are better ways
   // Tweak backend getUserDetails endpoint to return less data than needed
   // Only return users tweets instead of the whole userDetails object
+  // (Currently, I'm technically making 2 DB fetches on Profile component mount and requesting similar/same data)
+  // (If i'm forcing to show the users tweets first when the Profile component mounts, just fetch users tweets only from DB)
   // You will fetch more of this users data when you interact more with his/her profile
   // ( Maybe this is the wave of the data fetching flow with web development?? )
   // ( I feel like sending back a huge object based on a profile fetch isn't the move )
@@ -94,7 +114,6 @@ const Profile = ({ match }) => {
     if (activeTab.label === "Tweets") {
       return <TweetFeed isLoading={isLoading} posts={userDetails.posts} />;
     } else if (activeTab.label === "Likes") {
-      dispatch(getUsersLikedPosts(match.params.id));
       return <TweetFeed isLoading={isLoading} posts={userDetails.likes} />;
     }
   };
@@ -111,6 +130,7 @@ const Profile = ({ match }) => {
         <h1>Loading</h1>
       ) : (
         <div className="profile">
+          <Header />
           {isModalPresent ? <UpdateProfileModal hideModal={hideModal} /> : null}
           <div className="profile__banner">
             <img src="" alt="" />
@@ -149,7 +169,7 @@ const Profile = ({ match }) => {
                 <span className="profile__followingCount">37</span>
                 <span className="profile__followingText">Following</span>
               </div>
-              <div>
+              <div onClick={handleFollowers}>
                 <span className="profile__followersCount">36</span>
                 <span className="profile__followersText">Followers</span>
               </div>

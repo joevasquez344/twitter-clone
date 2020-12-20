@@ -3,6 +3,7 @@ import "./Home.scss";
 
 import TweetFeed from "components/tweets/TweetFeed";
 import CreateTweet from "components/tweets/CreateTweet";
+import Header from "layout/Header";
 
 import { useSelector, useDispatch } from "react-redux";
 import { getPosts } from "redux/post/post.actions";
@@ -15,10 +16,9 @@ const Home = () => {
   }, []);
   return (
     <div className="home">
+      <Header />
       <CreateTweet />
-      {
-        isLoading ? <h1>Loading</h1> : <TweetFeed posts={posts} />
-      }
+      {isLoading ? <h1>Loading</h1> : <TweetFeed posts={posts} />}
     </div>
   );
 };

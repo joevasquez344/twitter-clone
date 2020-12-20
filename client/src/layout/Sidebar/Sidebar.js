@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import "./Sidebar.scss";
 import { useHistory } from "react-router-dom";
 
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { getUserDetails } from "../../redux/auth/auth.actions";
 
 import TwitterIcon from "components/icons/TwitterIcon";
 import DownArrowIcon from "components/icons/DownArrowIcon";
@@ -12,6 +13,9 @@ const Sidebar = () => {
   const [isModalPresent, setIsModalPresent] = useState(false);
 
   const { isLoading } = useSelector((state) => state.post);
+  const userID = useSelector((state) => state.auth.user._id);
+
+  const dispatch = useDispatch();
 
   const showModal = () => setIsModalPresent(true);
   const hideModal = () => {
@@ -23,7 +27,10 @@ const Sidebar = () => {
   const handleHomeRoute = () => {
     history.push("/home");
   };
-  const handleProfileRoute = () => history.push("/profile");
+  const handleProfileRoute = () => {
+    dispatch(getUserDetails(userID));
+    history.push(`/user/${userID}`);
+  };
 
   return (
     <>

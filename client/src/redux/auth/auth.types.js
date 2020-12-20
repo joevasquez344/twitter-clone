@@ -1,4 +1,4 @@
-export const REQUEST_SENT = 'REQUEST_SENT';
+export const REQUEST_SENT = "REQUEST_SENT";
 
 export const GET_USER = "GET_USER";
 export const SET_USER = "SET_USER";
@@ -11,4 +11,8 @@ export const LOGOUT = "LOGOUT";
 export const USER_DETAILS_SUCCESS = "USER_DETAILS_SUCCESS";
 export const USER_DETAILS_FAILED = "USER_DETAILS_FAILED";
 
-export const GET_USERS_LIKED_POSTS = 'GET_USERS_LIKED_POSTS'
+export const GET_USERS_POSTS = "GET_USERS_POSTS";
+export const GET_USERS_LIKED_POSTS = "GET_USERS_LIKED_POSTS";
+
+export const GET_FOLLOWERS = 'GET_FOLLOWERS';
+
