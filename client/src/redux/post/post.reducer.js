@@ -1,10 +1,11 @@
+import {DeviceHub} from '@material-ui/icons';
 import {
   GET_POSTS,
   CREATE_POST,
   REQUEST_SENT,
   LIKE_POST,
   UNLIKE_POST,
-} from "./post.types";
+} from './post.types';
 
 const initialState = {
   posts: [],
@@ -12,7 +13,7 @@ const initialState = {
 };
 
 export default (state = initialState, action) => {
-  const { type, payload } = action;
+  const {type, payload} = action;
   switch (type) {
     case REQUEST_SENT:
       return {
@@ -20,6 +21,7 @@ export default (state = initialState, action) => {
         isLoading: true,
       };
     case GET_POSTS:
+      // debugger;
       return {
         ...state,
         posts: payload,

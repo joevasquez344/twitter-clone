@@ -1,18 +1,18 @@
-import React, { useState } from "react";
-import "./Sidebar.scss";
-import { useHistory } from "react-router-dom";
+import React, {useState, useEffect} from 'react';
+import './Sidebar.scss';
+import {useHistory} from 'react-router-dom';
 
-import { useSelector, useDispatch } from "react-redux";
-import { getUserDetails } from "../../redux/auth/auth.actions";
+import {useSelector, useDispatch} from 'react-redux';
+import {getUserDetails} from '../../redux/auth/auth.actions';
 
-import TwitterIcon from "components/icons/TwitterIcon";
-import DownArrowIcon from "components/icons/DownArrowIcon";
-import TweetModal from "components/modals/TweetModal/TweetModal";
+import TwitterIcon from 'components/icons/TwitterIcon';
+import DownArrowIcon from 'components/icons/DownArrowIcon';
+import TweetModal from 'components/modals/TweetModal/TweetModal';
 
-const Sidebar = () => {
+const Sidebar = (props) => {
   const [isModalPresent, setIsModalPresent] = useState(false);
 
-  const { isLoading } = useSelector((state) => state.post);
+  const {isLoading} = useSelector((state) => state.post);
   const userID = useSelector((state) => state.auth.user._id);
 
   const dispatch = useDispatch();
@@ -25,16 +25,20 @@ const Sidebar = () => {
   const history = useHistory();
 
   const handleHomeRoute = () => {
-    history.push("/home");
+    history.push('/');
   };
   const handleProfileRoute = () => {
-    dispatch(getUserDetails(userID));
+    // dispatch(getUserDetails(userID));
     history.push(`/user/${userID}`);
   };
 
+  useEffect(() => {
+    // history.push('/home');
+  }, []);
+
   return (
     <>
-      {" "}
+      {' '}
       <div className="sidebar">
         <header>
           <TwitterIcon />
@@ -43,7 +47,7 @@ const Sidebar = () => {
           <li onClick={handleHomeRoute}>
             <div className="sidebar__shortWrap">
               <span>
-                {" "}
+                {' '}
                 <i className="fas fa-home fa-2x"></i>
               </span>
 

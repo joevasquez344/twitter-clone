@@ -75,3 +75,78 @@
     }
   }
 }
+
+.tweet--borderless {
+    display: flex;
+  padding: 10px 20px;
+  // border-bottom: 1px solid #38444d;
+  cursor: pointer;
+  background: $twitter-navy;
+  @include transition;
+
+  &__profileImage {
+    @include profileImageMedium;
+    margin-right: 10px;
+  }
+
+  &:hover {
+    background-color: rgba($color: white, $alpha: 0.025);
+  }
+
+  section {
+    width: 100%;
+    header {
+      color: white;
+      display: flex;
+
+      .tweet__displayName {
+        margin-right: 5px;
+      }
+
+      .tweet__handle {
+        color: gray;
+      }
+    }
+
+    .tweet__graphic {
+      width: 100%;
+      display: inline-block;
+      height: 28vh;
+      margin-bottom: 15px;
+    }
+
+    p {
+      color: white;
+    }
+
+    footer {
+      width: 100%;
+      ul {
+        display: flex;
+        width: 100%;
+        width: 100%;
+        li {
+          width: 25%;
+          display: flex;
+          align-items: center;
+
+          &:nth-child(3) {
+            padding-left: 20px;
+          }
+          &:nth-child(4) {
+            padding-left: 30px;
+          }
+
+          i {
+            color: gray;
+            margin-right: 10px;
+          }
+
+          span {
+            color: gray;
+          }
+        }
+      }
+    }
+  }
+}

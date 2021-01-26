@@ -165,12 +165,11 @@ const getUsersLikedPosts = asyncHandler(async (req, res) => {
 });
 
 const followUser = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.params.id);
-
-  let followers = user.followers;
+  const userToFollow = await User.findById(req.params.id);
+  const loggedInUser = await User.findById(req.user.id);
 
   // Check to see if the logged in user already exists in the followers array
-  let userMatch = followers.find((user) => user == req.user.id);
+  let userMatch = userToFollow.followers.find((user) => user == req.user.id);
 
   console.log("User Match: ", userMatch);
 
@@ -182,32 +181,35 @@ const followUser = asyncHandler(async (req, res) => {
     });
   }
 
-  // If user does not exist, update this user object in DB with the req.user.id
+  userToFollow.followers.push(req.user);
+  loggedInUser.following.push(req.params.id);
 
-  followers.push(req.user);
+  await userToFollow.save();
+  await loggedInUser.save();
 
-  await user.save();
-
-  res.status(200).json(followers);
+  res.status(200).json(loggedInUser.following);
 });
 
 const unfollowUser = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.params.id);
+  const userToUnfollow = await User.findById(req.params.id);
+  const loggedInUser = await User.findById(req.user.id);
 
-  const followers = user.followers;
 
-  let userMatch = followers.find((user) => user == req.user.id);
+  let userMatch = userToUnfollow.followers.find((user) => user == req.user.id);
 
   if (userMatch) {
-    const updatedFollowers = followers.filter((user) => user != req.user.id);
+    const updatedFollowers = userToUnfollow.followers.filter((user) => user != req.user.id);
+    const updatedFollowing = loggedInUser.following.filter(user => user != req.params.id);
 
-    user.followers = updatedFollowers;
+    userToUnfollow.followers = updatedFollowers;
+    loggedInUser.following = updatedFollowing;
 
-    await user.save();
+    await userToUnfollow.save();
+    await loggedInUser.save();
 
     res.status(200).json({
       message: "User unfollowed",
-      followers: user.followers,
+      followers: userToUnfollow.followers,
     });
   } else {
     return res.json({

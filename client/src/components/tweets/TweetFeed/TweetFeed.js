@@ -1,14 +1,13 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "./TweetFeed.css";
 
-import Tweet from "components/tweets/Tweet/Tweet.js";
+import Tweet from "components/tweets/Tweet";
+import Reply from "components/tweets/Reply"
 
 import { useDispatch, useSelector } from "react-redux";
 import { getPosts } from "../../../redux/post/post.actions";
 
 const TweetFeed = ({ posts, isLoading }) => {
-  console.log("Tweets from feed: ", posts);
-
   return (
     <>
       {" "}

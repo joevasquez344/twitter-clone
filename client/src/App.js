@@ -1,52 +1,58 @@
-import React, { useEffect } from "react";
-import { Route, Switch, useHistory } from "react-router-dom";
-import "./App.scss";
+import React, {useEffect} from 'react';
+import {Route, Switch, useHistory} from 'react-router-dom';
+import './App.scss';
 
-import firebase from "./firebase/config";
+import PrivateRoute from 'components/PrivateRoute';
+import AppRoute from 'components/routes/AppRoute';
+import LayoutRoute from 'components/routes/LayoutRoute';
 
-import { useDispatch, useSelector } from "react-redux";
+import {useDispatch, useSelector} from 'react-redux';
 // import { setUser } from "./redux/auth/auth.actions";
 
-import Landing from "./pages/Landing/Landing";
-import Login from "./pages/Login/Login";
-import Layout from "./layout";
+import Landing from './pages/Landing/Landing';
+import Login from './pages/Login/Login';
+import Layout from './layout';
+import Home from 'containers/Home/Home';
+import Profile from 'containers/Profile/Profile';
+import Friends from 'containers/Friends/Friends';
 
 const App = () => {
   const history = useHistory();
   const dispatch = useDispatch();
-  const { user, isLoading, error } = useSelector((state) => state.auth);
-  const state = useSelector((state) => console.log(state));
+  const {user, isLoading, error} = useSelector((state) => state.auth);
 
-  useEffect(() => {
-    // firebase.auth().onAuthStateChanged((user) => {
-    //   if (user) {
-    //     setUser(user);
-    //     history.push("/");
-    //   } else {
-    //     history.push("/landing");
-    //   }
-    // });
- console.log('State: ', state);
-    if(user) {
-      history.push('/')
-    } else {
-      history.push('/landing')
-    }
-  }, [user]);
+  // useEffect(() => {
+  //   if (!user) {
+  //     history.push('/landing');
+  //   }
+  // }, [user]);
 
   return (
     <div className="app">
       <Switch>
-        <Route
+        {/* <PrivateRoute
           exact
           path="/"
           name="Layout"
-          render={(props) => {
-            if (user) {
-              return <Layout {...props} />;
-            }
-          }}
+          component={Layout}
+        /> */}
+        <AppRoute exact path="/" layout={Layout} component={Home} />
+        <AppRoute exact path="/user/:id" layout={Layout} component={Profile} />
+        <AppRoute
+          exact
+          path="/user/:id/followers"
+          layout={Layout}
+          component={Friends}
         />
+        <AppRoute
+          exact
+          path="/user/:id/followers"
+          layout={Layout}
+          component={Friends}
+        />
+
+        {/* <LayoutRoute exact path='/' layout={Layout} component={Home} /> */}
+
         <Route
           exact
           path="/landing"
@@ -64,8 +70,4 @@ const App = () => {
   );
 };
 
-
-// const AppWithAuth = withRouter(connect(mapStateToProps, { setUser })(App));
-
-// export default AppWithAuth;
 export default App;

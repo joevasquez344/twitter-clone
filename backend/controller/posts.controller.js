@@ -6,22 +6,32 @@ const asyncHandler = require("express-async-handler");
 // @route   GET /api/posts
 // @access  Private
 const getPosts = asyncHandler(async (req, res) => {
-  const posts = await Post.find({});
+  const posts = await Post.find({}).populate('user').populate('replyTo').sort({date: -1});
 
-  res.json(posts.reverse());
+  await User.populate(posts, {path: "replyTo.user"})
+
+  res.json(posts);
 });
 
 // @desc    Create Post
 // @route   POST /api/posts
 // @access  Private
 const createPost = asyncHandler(async (req, res) => {
-  const { text } = req.body;
+  const { text, replyTo } = req.body;
 
-  let post = await Post.create({
+  const postData = {
     user: req.user.id,
     text,
     handle: req.user.handle,
-  });
+  };
+
+  if (replyTo) {
+    postData.replyTo = replyTo;
+  }
+
+  const post = await Post.create(postData);
+
+  await User.findByIdAndUpdate(req.user.id, { $addToSet: { posts: post } });
 
   res.json(post);
 });
@@ -30,19 +40,18 @@ const createPost = asyncHandler(async (req, res) => {
 // @route   GET /api/posts/:id
 // @access  Private
 const getPostById = asyncHandler(async (req, res) => {
-  const post = await Post.findById(req.params.id);
-  if (post) {
-    res.json(post);
-  }
+  const post = await Post.findById(req.params.id).populate('replyTo');
+
+  res.json(post);
 });
 
 // @desc    Get Post By Id
 // @route   DELETE /api/posts/:id
 // @access  Private
 const deletePost = asyncHandler(async (req, res) => {
-  await Post.findByIdAndDelete(req.params.id);
+  const post = await Post.findByIdAndDelete(req.params.id);
 
-  res.json({ message: "Post Deleted" });
+  res.json({ message: "Post Deleted", payload: post });
 });
 
 // @desc    Like Post
@@ -115,6 +124,8 @@ const addComment = asyncHandler(async (req, res) => {
     handle: user.handle,
     avatar: user.avatar,
     user: req.user.id,
+    likes: [],
+    replies: [],
   };
 
   post.comments.unshift(newComment);
@@ -153,6 +164,8 @@ const removeComment = asyncHandler(async (req, res) => {
   res.json(post.comments);
 });
 
+const getComments = asyncHandler(async (req, res) => {});
+
 module.exports = {
   getPosts,
   createPost,
@@ -162,4 +175,7 @@ module.exports = {
   unlikePost,
   addComment,
   removeComment,
+  getComments,
 };
+
+// Reusable/Refactored Helpers

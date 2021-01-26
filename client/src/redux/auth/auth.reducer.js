@@ -12,6 +12,7 @@ import {
   GET_USERS_POSTS,
   GET_USERS_LIKED_POSTS,
   GET_FOLLOWERS,
+  CLEAR_USER_DETAILS_FROM_STORAGE
 } from "./auth.types";
 
 const initialState = {
@@ -87,6 +88,13 @@ export default (state = initialState, action) => {
         userDetails: null,
         error: payload,
       };
+      case CLEAR_USER_DETAILS_FROM_STORAGE:
+        return {
+          ...state,
+          isLoading: false,
+          userDetails: null,
+          error: null
+        }
     case GET_USERS_POSTS:
       return {
         ...state,

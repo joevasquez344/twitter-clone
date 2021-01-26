@@ -1,61 +1,62 @@
-import React, { useState, useEffect } from "react";
-import "./Profile.scss";
+import React, {useState, useEffect} from 'react';
+import './Profile.scss';
 
-import { useDispatch, useSelector } from "react-redux";
+import {useDispatch, useSelector} from 'react-redux';
 
-import { useHistory } from "react-router-dom";
+import {useHistory} from 'react-router-dom';
+import {connect} from 'react-redux';
 
-import TweetFeed from "components/tweets/TweetFeed/TweetFeed";
-import Header from "layout/Header";
-import UpdateProfileModal from "components/modals/UpdateProfileModal";
+import TweetFeed from 'components/tweets/TweetFeed/TweetFeed';
+import Header from 'layout/Header';
+import UpdateProfileModal from 'components/modals/UpdateProfileModal';
 import {
   getUserDetails,
   getUsersPosts,
   getUsersLikedPosts,
   getFollowers,
-} from "redux/auth/auth.actions";
+  clearUserDetailsFromStorage,
+} from 'redux/auth/auth.actions';
+import {render} from '@testing-library/react';
 
-const Profile = ({ match }) => {
-  const [isModalPresent, setIsModalPresent] = useState(false);
-  const [tabContent, setTabContent] = useState([]);
-  const [tabs, setTabs] = useState([
-    {
-      id: 1,
-      label: "Tweets",
-      isActive: true,
-    },
-    {
-      id: 2,
-      label: "Tweets & Replies",
-      isActive: false,
-    },
-    {
-      id: 3,
-      label: "Media",
-      isActive: false,
-    },
-    {
-      id: 4,
-      label: "Likes",
-      isActive: false,
-    },
-  ]);
+class Profile extends React.Component {
+  state = {
+    isModalPresent: false,
+    tabContent: [],
+    tabs: [
+      {
+        id: 1,
+        label: 'Tweets',
+        isActive: true,
+      },
+      {
+        id: 2,
+        label: 'Tweets & Replies',
+        isActive: false,
+      },
+      {
+        id: 3,
+        label: 'Media',
+        isActive: false,
+      },
+      {
+        id: 4,
+        label: 'Likes',
+        isActive: false,
+      },
+    ],
+  };
 
-  const history = useHistory();
+  hideModal = () => this.setState({...this.state, isModalPresent: false});
+  showModal = () => this.setState({...this.state, isModalPresent: true});
 
-  const dispatch = useDispatch();
-  // const { posts } = useSelector((state) => state.post);
-  const { userDetails, isLoading } = useSelector((state) => state.auth);
-
-  const hideModal = () => setIsModalPresent(false);
-  const showModal = () => setIsModalPresent(true);
-
-  const handleTabClick = (id) => {
-    const currentActiveTab = tabs.find((tab) => tab.isActive === true);
+  handleTabClick = (id) => {
+    const currentActiveTab = this.state.tabs.find(
+      (tab) => tab.isActive === true
+    );
 
     let newActiveTab = null;
 
-    const updatedTabs = tabs.map((tab) => {
+    const updatedTabs = this.state.tabs.map((tab) => {
       if (tab.id === id) {
         tab.isActive = true;
         newActiveTab = tab;
@@ -66,17 +67,21 @@ const Profile = ({ match }) => {
       return tab;
     });
 
-    if (newActiveTab.label === "Tweets") {
-      dispatch(getUserDetails(match.params.id));
-    } else if (newActiveTab.label === "Likes") {
-      dispatch(getUserDetails(match.params.id));
+    if (newActiveTab.label === 'Tweets') {
+      // dispatch(getUserDetails(match.params.id));
+      this.props.getUserDetails(this.props.match.params.id);
+    } else if (newActiveTab.label === 'Likes') {
+      // dispatch(getUserDetails(match.params.id));
+      this.props.getUserDetails(this.props.match.params.id);
     }
-    setTabs(updatedTabs);
+    // setTabs(updatedTabs);
+    this.setState({...this.state, tabs: updatedTabs});
   };
 
-  const handleFollowers = () => {
-    dispatch(getFollowers(match.params.id));
-    history.push(`/user/${match.params.id}/followers`)
+  handleFollowers = () => {
+    // this.props.getFollowers(this.props.match.params.id);
+
+    this.props.history.push(`/user/${this.props.match.params.id}/followers`);
   };
 
   // BACKEND WORK - TODO
@@ -109,95 +114,156 @@ const Profile = ({ match }) => {
   // ( Maybe this is the wave of the data fetching flow with web development?? )
   // ( I feel like sending back a huge object based on a profile fetch isn't the move )
 
-  const renderTabContent = () => {
-    const activeTab = tabs.find((tab) => tab.isActive === true);
-    if (activeTab.label === "Tweets") {
-      return <TweetFeed isLoading={isLoading} posts={userDetails.posts} />;
-    } else if (activeTab.label === "Likes") {
-      return <TweetFeed isLoading={isLoading} posts={userDetails.likes} />;
+  renderTabContent = () => {
+    const activeTab = this.state.tabs.find((tab) => tab.isActive === true);
+    if (activeTab.label === 'Tweets') {
+      return (
+        <TweetFeed
+          isLoading={this.props.isLoading}
+          posts={this.props.userDetails.posts}
+        />
+      );
+    } else if (activeTab.label === 'Likes') {
+      return (
+        <TweetFeed
+          isLoading={this.props.isLoading}
+          posts={this.props.userDetails.likes}
+        />
+      );
     }
   };
 
-  useEffect(() => {
-    dispatch(getUserDetails(match.params.id));
-  }, []);
+  // useEffect(() => {
+  //   console.log('Match Params: ', match)
+  //   dispatch(getUserDetails(match.params.id));
+  // }, []);
 
-  console.log("User Details: ", userDetails);
+  componentWillMount() {
+    console.log('Component Will Mount');
+  }
 
-  return (
-    <>
-      {isLoading ? (
-        <h1>Loading</h1>
-      ) : (
-        <div className="profile">
-          <Header />
-          {isModalPresent ? <UpdateProfileModal hideModal={hideModal} /> : null}
-          <div className="profile__banner">
-            <img src="" alt="" />
+  componentDidMount() {
+    console.log('Component Did Mount');
+    this.props.getUserDetails(this.props.match.params.id);
+  }
+
+  componentWillUnmount() {
+    console.log('Component Will Unmount');
+    // this.props.clearUserDetailsFromStorage();
+    console.log('URL: ', this.props.match.url);
+    // console.log(location.reload())
+
+    // this.props.history.push(`/user/${this.props.match.params.id}`)
+  }
+
+  componentWillUpdate() {
+    console.log('Component Will Update');
+  }
+
+  componentDidUpdate() {
+    console.log('Component Did Update');
+  }
+
+  shouldComponentUpdate() {
+    console.log('Should Component Update');
+    return true;
+  }
+
+  render() {
+    return (
+      <>
+        {this.props.isLoading ? (
+          <h1>Loading</h1>
+        ) : (
+          <div className="profile">
+            <Header />
+            {this.state.isModalPresent ? (
+              <UpdateProfileModal hideModal={this.hideModal} />
+            ) : null}
+            <div className="profile__banner">
+              <img src="" alt="" />
+            </div>
+
+            <div className="profile__info">
+              <div className="profile__config">
+                <img src="" className="profile__image" />
+                {this.props.user._id === this.props.userDetails._id ? (
+                  <button onClick={this.showModal} className="profile__editBtn">
+                    Edit Profile
+                  </button>
+                ) : (
+                  <div className="profile__editBtn">Follow</div>
+                )}
+              </div>
+
+              <div className="profile__names">
+                <h5>{this.props.userDetails.handle}</h5>
+                <small>@{this.props.userDetails.handle}</small>
+              </div>
+
+              <div className="profile__locationAndDate">
+                <div>
+                  <span>
+                    <i className="fas fa-map-marker-alt"></i>
+                  </span>
+                  <span>California, USA</span>
+                </div>
+                <div>
+                  <span>
+                    <i className="far fa-calendar-alt"></i>
+                  </span>
+                  <span>Joined July 2015</span>
+                </div>
+              </div>
+
+              <div className="profile__follow">
+                <div>
+                  <span className="profile__followingCount">37</span>
+                  <span className="profile__followingText">Following</span>
+                </div>
+                <div onClick={this.handleFollowers}>
+                  <span className="profile__followersCount">36</span>
+                  <span className="profile__followersText">Followers</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="profile__tabs">
+              <ul>
+                {this.state.tabs.map((tab) => {
+                  return (
+                    <li
+                      className={
+                        tab.isActive ? 'profile__tab--active' : 'profile__tab'
+                      }
+                      onClick={() => this.handleTabClick(tab.id)}
+                      key={tab.id}
+                    >
+                      {tab.label}
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+            {this.renderTabContent()}
           </div>
+        )}
+      </>
+    );
+  }
+}
 
-          <div className="profile__info">
-            <div className="profile__config">
-              <img src="" className="profile__image" />
-              <button onClick={showModal} className="profile__editBtn">
-                Edit Profile
-              </button>
-            </div>
+const mapStateToProps = (state) => ({
+  isLoading: state.auth.isLoading,
+  userDetails: state.auth.userDetails,
+  posts: state.post.posts,
+  user: state.auth.user,
+});
 
-            <div className="profile__names">
-              <h5>{userDetails.handle}</h5>
-              <small>@{userDetails.handle}</small>
-            </div>
-
-            <div className="profile__locationAndDate">
-              <div>
-                <span>
-                  <i className="fas fa-map-marker-alt"></i>
-                </span>
-                <span>California, USA</span>
-              </div>
-              <div>
-                <span>
-                  <i className="far fa-calendar-alt"></i>
-                </span>
-                <span>Joined July 2015</span>
-              </div>
-            </div>
-
-            <div className="profile__follow">
-              <div>
-                <span className="profile__followingCount">37</span>
-                <span className="profile__followingText">Following</span>
-              </div>
-              <div onClick={handleFollowers}>
-                <span className="profile__followersCount">36</span>
-                <span className="profile__followersText">Followers</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="profile__tabs">
-            <ul>
-              {tabs.map((tab) => {
-                return (
-                  <li
-                    className={
-                      tab.isActive ? "profile__tab--active" : "profile__tab"
-                    }
-                    onClick={() => handleTabClick(tab.id)}
-                    key={tab.id}
-                  >
-                    {tab.label}
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-          {renderTabContent()}
-        </div>
-      )}
-    </>
-  );
-};
-
-export default Profile;
+export default connect(mapStateToProps, {
+  getUserDetails,
+  getUsersPosts,
+  getUsersLikedPosts,
+  getFollowers,
+  clearUserDetailsFromStorage,
+})(Profile);

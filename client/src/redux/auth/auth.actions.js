@@ -14,6 +14,7 @@ import {
   GET_USERS_POSTS,
   GET_USERS_LIKED_POSTS,
   GET_FOLLOWERS,
+  CLEAR_USER_DETAILS_FROM_STORAGE
 } from "./auth.types";
 
 // export const setUser = (user) => (dispatch) => {
@@ -144,6 +145,8 @@ export const getUserDetails = (id) => async (dispatch, getState) => {
       type: USER_DETAILS_SUCCESS,
       payload: data,
     });
+
+    localStorage.setItem("userDetails", JSON.stringify(data));
   } catch (error) {
     dispatch({
       type: USER_DETAILS_FAILED,
@@ -214,14 +217,24 @@ export const getFollowers = (id) => async (dispatch, getState) => {
       },
     };
 
-    const followers = await axios.get(`/api/user/${id}/followers`, config);
+    const { data } = await axios.get(`/api/users/${id}/followers`, config);
+
+    const followers = data;
+
+    console.log("Followers: ", followers);
 
     dispatch({
       type: GET_FOLLOWERS,
       payload: followers,
     });
-    
   } catch (error) {
     console.log(error);
   }
 };
+
+export const clearUserDetailsFromStorage = () => dispatch => {
+  dispatch({
+    type: CLEAR_USER_DETAILS_FROM_STORAGE
+  })
+  localStorage.removeItem("userDetails");
+}

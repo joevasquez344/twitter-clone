@@ -1,19 +1,23 @@
-import React, { useState } from "react";
-import "./Login.scss";
+import React, {useState, useEffect} from 'react';
+import './Login.scss';
 
-import TwitterIcon from "components/icons/TwitterIcon";
-import SignUpModal from "components/modals/SignUpModal/SignUpModal";
+import {useHistory} from 'react-router-dom';
 
-import { useDispatch, useSelector } from "react-redux";
-import { login } from "redux/auth/auth.actions";
+import TwitterIcon from 'components/icons/TwitterIcon';
+import SignUpModal from 'components/modals/SignUpModal/SignUpModal';
+
+import {useDispatch, useSelector} from 'react-redux';
+import {login} from 'redux/auth/auth.actions';
 
 const Login = () => {
   const [isModalPresent, setIsModalPresent] = useState(false);
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+
+  const history = useHistory();
 
   const dispatch = useDispatch();
-  const { user, isLoading, error } = useSelector((state) => state.auth);
+  const {user, isLoading, error} = useSelector((state) => state.auth);
 
   const handleUsername = (e) => setUsername(e.target.value);
   const handlePassword = (e) => setPassword(e.target.value);
@@ -22,31 +26,16 @@ const Login = () => {
   const showModal = () => setIsModalPresent(true);
 
   const handleLogin = (e) => {
-    // const _email = emailValidator.validate(email);
-
-    // const validatedPassword = new passwordValidator();
-
-    // validatedPassword
-    //   .is()
-    //   .min(6)
-    //   .is()
-    //   .max(30)
-    //   .has()
-    //   // .digits(2)
-    //   .has()
-    //   .not()
-    //   .spaces();
     e.preventDefault();
-    // console.log("Form Cred: ", _email, validatedPassword);
 
-    // if(!email) {
-    //   console.log('Email validation failed')
-    //   return false
-    // }
-
-    // login(_email, validatedPassword)
     dispatch(login(username, password));
   };
+
+  useEffect(() => {
+    if (user) {
+      history.push('/');
+    }
+  }, [user]);
 
   return (
     <div className="login">
@@ -76,7 +65,7 @@ const Login = () => {
         </button>
       </form>
       <small className="login-extra">
-        <span>Forgot Password?</span> <span>*</span>{" "}
+        <span>Forgot Password?</span> <span>*</span>{' '}
         <span onClick={showModal}>Sign up for Twitter</span>
       </small>
       <div className="login__error">{error}</div>

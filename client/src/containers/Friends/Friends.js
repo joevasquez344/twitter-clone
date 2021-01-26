@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
 import "./Friends.scss";
 
+import { useSelector, useDispatch } from "react-redux";
+import { getFollowers } from '../../redux/auth/auth.actions'
+
 import Header from "layout/Header";
 
-const Friends = () => {
+const Friends = ({match}) => {
   const [tabs, setTabs] = useState([
     {
       id: 1,
@@ -27,6 +30,10 @@ const Friends = () => {
     },
   ]);
 
+  const dispatch = useDispatch();
+
+  const followers = useSelector((state) => state.auth.userDetails.followers);
+
   const handleTabClick = (id) => {
     const currentActiveTab = tabs.find((tab) => tab.isActive === true);
 
@@ -45,15 +52,42 @@ const Friends = () => {
 
     setTabs(updatedTabs);
   };
+
+  useEffect(() => {
+dispatch(getFollowers(match.params.id))
+  }, [])
   return (
     <div className="friends">
-      <header>
+      <header className="friends__header">
         <span>Followers</span>
         <span>Following</span>
       </header>
 
       <ul className="friends__list">
-        <li className="friends__item">
+        {followers.map((user) => {
+          return (
+            <li className="friends__item">
+              <img src="" alt="" />
+              <div className="friends__item-container">
+                <div className="friends__item-top">
+                  <div className="friends__names-wrapper">
+                    <div className="friends__name">{user.handle}</div>
+                    <span className="friends__username">{user.handle}</span>
+                    <span className="friends__status">Follows You</span>
+                  </div>
+                  <button>Follow</button>
+                </div>
+                <p>
+                  Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sit
+                  distinctio molestias maiores nihil suscipit, amet consequatur
+                  voluptatem optio qui! Vel ipsa veniam possimus libero neque
+                  dolores, repudiandae vero nisi veritatis.
+                </p>
+              </div>
+            </li>
+          );
+        })}
+        {/* <li className="friends__item">
           <div className="friends__item-top">
             <img src="" alt="" />
             <div>
@@ -68,7 +102,7 @@ const Friends = () => {
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Harum,
             itaque!
           </p>
-        </li>
+        </li> */}
       </ul>
     </div>
   );

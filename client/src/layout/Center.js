@@ -1,29 +1,29 @@
-import React from "react";
-import routes from "../routes";
+import React from 'react';
+import routes from '../routes';
 import {
   Switch,
   Route,
   HashRouter,
   BrowserRouter as Router,
   Redirect,
-} from "react-router-dom";
+} from 'react-router-dom';
 
-import Home from "containers/Home/Home";
+import Home from 'containers/Home/Home';
 
 class Center extends React.Component {
   shouldComponentUpdate() {
     return false;
   }
+
+  componentDidMount() {
+    console.log('Props: ', this.props);
+  }
+
   render() {
     return (
       <div style={styles.overflow}>
-        {/* <Home /> */}
-
         <Switch>
           {routes.map((route, idx) => {
-            if (!route.component) {
-              return null;
-            }
             return (
               <Route
                 key={idx}
@@ -42,9 +42,9 @@ class Center extends React.Component {
 
 const styles = {
   overflow: {
-    overflowY: "scroll",
-    borderLeft: "1px solid #38444d",
-    borderRight: "1px solid #38444d",
+    overflowY: 'scroll',
+    borderLeft: '1px solid #38444d',
+    borderRight: '1px solid #38444d',
   },
 };
 
