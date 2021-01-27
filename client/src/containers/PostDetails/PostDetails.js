@@ -1,7 +1,24 @@
-import React from "react";
-import TweetFeed from "components/tweets/TweetFeed/TweetFeed";
+import React, {useState, useEffect} from 'react';
+import './PostDetails.scss';
 
-const PostDetails = () => {
+import TweetFeed from 'components/tweets/TweetFeed/TweetFeed';
+import Tweet from 'components/tweets/Tweet/Tweet';
+
+import {useSelector, useDispatch} from 'react-redux';
+import {getPostById} from '../../redux/post/post.actions';
+
+const PostDetails = ({match}) => {
+  const dispatch = useDispatch();
+  const {post, isLoading} = useSelector((state) => state.post);
+
+  
+
+  useEffect(() => {
+    dispatch(getPostById(match.params.postId));
+  }, []);
+
+
+  console.log('Post from Post Details: ', post.likes);
   return (
     // <div className="postDetails">
     //   <header>
@@ -26,19 +43,20 @@ const PostDetails = () => {
     //     </div>
     //   </header>
     // </div>
-    <div className="post-details">
+    <div className="postDetails">
       <header>
         <i>back</i>
         <h3>Tweet</h3>
       </header>
+      {
+       !isLoading ? <Tweet post={post} /> : <h1 style={{color: 'white'}}>Loading Tweet</h1>
+      }
+  
+   {/* <Tweet post={post} />  */}
+ 
+      <section className="section-a"></section>
 
-      <section className="section-a">
-          
-      </section>
-
-      <section className="section-b">
-        <TweetFeed />
-      </section>
+      <section className="section-b">{/* <TweetFeed /> */}</section>
     </div>
   );
 };

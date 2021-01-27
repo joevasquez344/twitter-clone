@@ -1,38 +1,35 @@
-import React, { useState, useEffect } from "react";
-import "./Friends.scss";
+import React, {useState, useEffect} from 'react';
+import './Friends.scss';
 
-import { useSelector, useDispatch } from "react-redux";
-import { getFollowers } from '../../redux/auth/auth.actions'
+import {useSelector, useDispatch} from 'react-redux';
+import {getFollowers, getFollowing} from '../../redux/auth/auth.actions';
 
-import Header from "layout/Header";
+import {useHistory} from 'react-router-dom';
+
+import Header from 'layout/Header';
+import FollowingButton from 'components/buttons/FollowingButton/FollowingButton';
 
 const Friends = ({match}) => {
   const [tabs, setTabs] = useState([
     {
       id: 1,
-      label: "Tweets",
-      isActive: true,
+      label: 'Followers',
+      isActive: false,
     },
     {
       id: 2,
-      label: "Tweets & Replies",
-      isActive: false,
-    },
-    {
-      id: 3,
-      label: "Media",
-      isActive: false,
-    },
-    {
-      id: 4,
-      label: "Likes",
+      label: 'Following',
       isActive: false,
     },
   ]);
 
   const dispatch = useDispatch();
 
+  const history = useHistory();
+
   const followers = useSelector((state) => state.auth.userDetails.followers);
+  const following = useSelector((state) => state.auth.userDetails.following);
+  const isLoading = useSelector((state) => state.auth.isLoading);
 
   const handleTabClick = (id) => {
     const currentActiveTab = tabs.find((tab) => tab.isActive === true);
@@ -50,59 +47,112 @@ const Friends = ({match}) => {
       return tab;
     });
 
+    history.push(
+      `/user/${match.params.id}/${newActiveTab.label.toLowerCase()}`
+    );
+
+    if (newActiveTab.label === 'Followers') {
+      dispatch(getFollowers(match.params.id));
+    } else if (newActiveTab.label === 'Following') {
+      dispatch(getFollowing(match.params.id));
+    }
+
     setTabs(updatedTabs);
   };
 
   useEffect(() => {
-dispatch(getFollowers(match.params.id))
-  }, [])
+    if (match.path.split('/')[3] === 'followers') {
+      dispatch(getFollowers(match.params.id));
+
+      const updatedTabs = tabs.map((tab) => {
+        if (tab.label === 'Followers') {
+          tab.isActive = true;
+        }
+
+        return tab;
+      });
+      setTabs(updatedTabs);
+    } else if (match.path.split('/')[3] === 'following') {
+      dispatch(getFollowing(match.params.id));
+
+      const updatedTabs = tabs.map((tab) => {
+        if (tab.label === 'Following') {
+          tab.isActive = true;
+        }
+
+        return tab;
+      });
+
+      setTabs(updatedTabs);
+    }
+  }, []);
+
   return (
     <div className="friends">
       <header className="friends__header">
-        <span>Followers</span>
-        <span>Following</span>
+        {tabs.map((tab) => (
+          <span
+            key={tab.id}
+            onClick={() => handleTabClick(tab.id)}
+            className={tab.isActive ? 'friends__tab--active' : 'friends__tab'}
+          >
+            {tab.label}
+          </span>
+        ))}
       </header>
 
       <ul className="friends__list">
-        {followers.map((user) => {
-          return (
-            <li className="friends__item">
-              <img src="" alt="" />
-              <div className="friends__item-container">
-                <div className="friends__item-top">
-                  <div className="friends__names-wrapper">
-                    <div className="friends__name">{user.handle}</div>
-                    <span className="friends__username">{user.handle}</span>
-                    <span className="friends__status">Follows You</span>
+        {isLoading ? (
+          <h1>Loading</h1>
+        ) : match.path.split('/')[3] === 'followers' ? (
+          followers.map((user) => {
+            return (
+              <li className="friends__item">
+                <img src="" alt="" />
+                <div className="friends__item-container">
+                  <div className="friends__item-top">
+                    <div className="friends__names-wrapper">
+                      <div className="friends__name">{user.handle}</div>
+                      <span className="friends__username">{user.handle}</span>
+                      <span className="friends__status">Follows You</span>
+                    </div>
+                    <button>Follow</button>
                   </div>
-                  <button>Follow</button>
+                  <p>
+                    Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+                    Sit distinctio molestias maiores nihil suscipit, amet
+                    consequatur voluptatem optio qui! Vel ipsa veniam possimus
+                    libero neque dolores, repudiandae vero nisi veritatis.
+                  </p>
                 </div>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sit
-                  distinctio molestias maiores nihil suscipit, amet consequatur
-                  voluptatem optio qui! Vel ipsa veniam possimus libero neque
-                  dolores, repudiandae vero nisi veritatis.
-                </p>
-              </div>
-            </li>
-          );
-        })}
-        {/* <li className="friends__item">
-          <div className="friends__item-top">
-            <img src="" alt="" />
-            <div>
-              <h5>Name</h5>
-              <span>Handle</span>
-              <span>Status</span>
-            </div>
-            <button>Following</button>
-          </div>
-
-          <p className="friends__item-bottom">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Harum,
-            itaque!
-          </p>
-        </li> */}
+              </li>
+            );
+          })
+        ) : match.path.split('/')[3] === 'following' ? (
+          following.map((user) => {
+            return (
+              <li className="friends__item">
+                <img src="" alt="" />
+                <div className="friends__item-container">
+                  <div className="friends__item-top">
+                    <div className="friends__names-wrapper">
+                      <div className="friends__name">{user.handle}</div>
+                      <span className="friends__username">{user.handle}</span>
+                      <span className="friends__status">Follows You</span>
+                    </div>
+                    <FollowingButton />
+                  </div>
+                  <p>
+                    Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+                    Sit distinctio molestias maiores nihil suscipit, amet
+                    consequatur voluptatem optio qui! Vel ipsa veniam possimus
+                    libero neque dolores, repudiandae vero nisi veritatis.
+                  </p>
+                </div>
+              </li>
+            );
+          })
+        ) : null}
       </ul>
     </div>
   );

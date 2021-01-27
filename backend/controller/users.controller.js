@@ -237,6 +237,23 @@ const getUsersFollowers = asyncHandler(async (req, res) => {
   res.json(followers);
 });
 
+const getUsersFollowing = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id).populate("following");
+
+  const following = user.following.map(user => {
+    const updatedUser = {};
+
+    updatedUser._id = user._id;
+    updatedUser.handle = user.handle;
+
+    return updatedUser;
+  })
+
+  console.log('Following: ', user.following)
+
+  res.json(following);
+});
+
 module.exports = {
   login,
   register,
@@ -246,6 +263,7 @@ module.exports = {
   getUsersLikedPosts,
   getUsersPosts,
   getUsersFollowers,
+  getUsersFollowing,
   followUser,
   unfollowUser,
 };

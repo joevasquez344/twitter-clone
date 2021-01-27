@@ -14,7 +14,9 @@ import {
   GET_USERS_POSTS,
   GET_USERS_LIKED_POSTS,
   GET_FOLLOWERS,
-  CLEAR_USER_DETAILS_FROM_STORAGE
+  FOLLOW,
+  CLEAR_USER_DETAILS_FROM_STORAGE,
+  GET_FOLLOWING
 } from "./auth.types";
 
 // export const setUser = (user) => (dispatch) => {
@@ -209,6 +211,9 @@ export const getUsersLikedPosts = (userID) => async (dispatch, getState) => {
 
 export const getFollowers = (id) => async (dispatch, getState) => {
   try {
+    dispatch({
+      type: REQUEST_SENT
+    })
     const token = getState().auth.user.token;
 
     const config = {
@@ -218,6 +223,8 @@ export const getFollowers = (id) => async (dispatch, getState) => {
     };
 
     const { data } = await axios.get(`/api/users/${id}/followers`, config);
+
+    console.log('DATAAA: ', data);
 
     const followers = data;
 
@@ -231,6 +238,54 @@ export const getFollowers = (id) => async (dispatch, getState) => {
     console.log(error);
   }
 };
+
+export const follow = (id) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: REQUEST_SENT
+    })
+    const token = getState().auth.user.token;
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    }
+
+    const { data } = await axios.post(`/api/users/${id}/follow`, {}, config);
+
+    dispatch({
+      type: FOLLOW,
+      payload: data
+    })
+  } catch (error) {
+    console.error(error.message);
+  }
+}
+
+export const getFollowing = (id) => async (dispatch, getState) => {
+   try {
+     dispatch({
+       type: REQUEST_SENT,
+     })
+
+     const token = getState().auth.user.token;
+
+     const config = {
+       headers: {
+         Authorization: `Bearer ${token}`
+       }
+     }
+
+     const {data} = await axios.get(`/api/users/${id}/following`, config)
+
+     dispatch({
+       type: GET_FOLLOWING,
+       payload: data
+     })
+   } catch (error) {
+     console.error(error)
+   }
+}
 
 export const clearUserDetailsFromStorage = () => dispatch => {
   dispatch({

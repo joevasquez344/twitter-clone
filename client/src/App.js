@@ -15,6 +15,7 @@ import Layout from './layout';
 import Home from 'containers/Home/Home';
 import Profile from 'containers/Profile/Profile';
 import Friends from 'containers/Friends/Friends';
+import PostDetails from 'containers/PostDetails/PostDetails';
 
 const App = () => {
   const history = useHistory();
@@ -46,9 +47,15 @@ const App = () => {
         />
         <AppRoute
           exact
-          path="/user/:id/followers"
+          path="/user/:id/following"
           layout={Layout}
           component={Friends}
+        />
+        <AppRoute
+          exact
+          path="/user/:id/post/:postId"
+          layout={Layout}
+          component={PostDetails}
         />
 
         {/* <LayoutRoute exact path='/' layout={Layout} component={Home} /> */}

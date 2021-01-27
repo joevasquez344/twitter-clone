@@ -1,0 +1,10 @@
+{
+    "version": 3,
+    "mappings": "AAEA,AAAA,OAAO,AAAC,CACN,UAAU,CCFG,OAAO,CDGpB,OAAO,CAAE,IAAI,CACb,qBAAqB,CAAE,WAAW,CAClC,KAAK,CAAE,GAAG,CACV,MAAM,CAAE,KAAK,CACb,MAAM,CAAE,IAAI,CAEb,AAED,AAAA,SAAS,AAAC,CACR,MAAM,CAAE,IAAI,CACZ,KAAK,CAAE,KAAK,CACb",
+    "sources": [
+        "../client/src/layout/Layout.scss",
+        "../client/src/scss/1-helpers/_variables.scss"
+    ],
+    "names": [],
+    "file": "Layout.css"
+}

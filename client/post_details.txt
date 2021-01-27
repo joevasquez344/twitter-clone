@@ -1,0 +1,45 @@
+4 Types Of Posts:
+
+1. Post
+2. Comment
+3. Reply To Comment
+4. Reply To Reply
+
+4 Types Of Post Components
+
+1. Post
+2. Comment ( If there are no replies, this will be displayed as an ordinary post component)
+3. Thread
+4.
+
+If there is a post with no comments/replies, it will just be a default post component with no 'sideline' that trails under the avatar
+    ELSE
+        It will have a 'sideline'
+
+NOTE: All replies have no top and bottom border ( All in one frame )
+
+Other components: 
+1. Show replies ( Bar Figure )
+
+Scenarios:
+1. If there is only one comment to a post, display the post and comment in one frame
+2. If a commenter who replies to his/her own comment or replies to their own reply, display in one frame
+4. If a commenter who replies to his/her own comment more than once
+5. A comment is only going to show a max of 1 reply, the rest will have to be loaded in by clicking 'Show replies'
+
+- When one clicks on a post, it will load a MAX of 50 comments
+- When the comments load when a post is clicked, comments will only load a MAX of one reply, in one frame, click Show replies for more
+- When one clicks a 
+
+- When a reply has a ton of replies, show the 'Show replies' button which will show all of its replies with no MAX unless there are maybe 15 replies or more,
+ then show the 'Show replies' button for more with the same process???
+
+ - If you ever click on any of the 4 types of posts (not the 'Show more' button), it will have the same effect as if you click on a 1st gen standard post
+ ( load a max of 50 of its replies/comments)
+
+ - Always a Post to Comment relationship
+    - Every comment, reply, reply to reply, is a post when it is clicked on, meaning it is treated as a post and will have its own post page
+    - Think of the reply feature as a small and extra feature when ONLY the 'Show replies' button is clicked on. It doesn't have it's own page, it only increases
+    the view height of the frame with a smooth transition to show the rest of the replies... a handy and short tool to quickly see replies at certain MAXIMUM quantity...
+    ... maybe 3 replies???
+

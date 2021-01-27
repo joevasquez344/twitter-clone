@@ -12,8 +12,10 @@ import {
   GET_USERS_POSTS,
   GET_USERS_LIKED_POSTS,
   GET_FOLLOWERS,
-  CLEAR_USER_DETAILS_FROM_STORAGE
-} from "./auth.types";
+  GET_FOLLOWING,
+  FOLLOW,
+  CLEAR_USER_DETAILS_FROM_STORAGE,
+} from './auth.types';
 
 const initialState = {
   user: null,
@@ -23,7 +25,7 @@ const initialState = {
 };
 
 export default (state = initialState, action) => {
-  const { type, payload } = action;
+  const {type, payload} = action;
   switch (type) {
     case REQUEST_SENT:
       return {
@@ -45,7 +47,7 @@ export default (state = initialState, action) => {
       };
 
     case LOGIN_FAILED:
-      console.log("Login Error: ", payload);
+      console.log('Login Error: ', payload);
       return {
         ...state,
         user: null,
@@ -88,35 +90,51 @@ export default (state = initialState, action) => {
         userDetails: null,
         error: payload,
       };
-      case CLEAR_USER_DETAILS_FROM_STORAGE:
-        return {
-          ...state,
-          isLoading: false,
-          userDetails: null,
-          error: null
-        }
+    case CLEAR_USER_DETAILS_FROM_STORAGE:
+      return {
+        ...state,
+        isLoading: false,
+        userDetails: null,
+        error: null,
+      };
     case GET_USERS_POSTS:
       return {
         ...state,
         isLoading: false,
-        userDetails: { ...state.userDetails, posts: payload },
+        userDetails: {...state.userDetails, posts: payload},
         error: null,
       };
     case GET_USERS_LIKED_POSTS:
       return {
         ...state,
         isLoading: false,
-        userDetails: { ...state.userDetails, likes: payload },
+        userDetails: {...state.userDetails, likes: payload},
         error: null,
       };
 
-      case GET_FOLLOWERS: 
+    case GET_FOLLOWERS:
       return {
         ...state,
         isLoading: false,
         userDetails: {...state.userDetails, followers: payload},
-        error: null
-      }
+        error: null,
+      };
+case GET_FOLLOWING:
+  return {
+    ...state,
+    isLoading: false,
+    userDetails: {...state.userDetails, following: payload}
+  }
+    case FOLLOW:
+      return {
+        ...state,
+        isLoading: false,
+        userDetails: {
+          ...state.userDetails,
+          followers: {...state.userDetails.followers, payload},
+        },
+        error: null,
+      };
 
     default:
       return state;

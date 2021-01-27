@@ -12,7 +12,8 @@ const {
   getUsersPosts,
   getUsersFollowers,
   followUser,
-  unfollowUser
+  unfollowUser,
+  getUsersFollowing
 } = require("../controller/users.controller");
 
 router.route("/").post(register).get(protect, getUsers);
@@ -29,6 +30,7 @@ router.route("/:id/likes").get(protect, getUsersLikedPosts);
 router.route('/:id/follow').post(protect, followUser)
 router.route('/:id/unfollow').put(protect, unfollowUser)
 router.route("/:id/followers").get(protect, getUsersFollowers);
+router.route("/:id/following").get(protect, getUsersFollowing);
 
 // router.get('/profile/:id', protect, getLoggedInProfile);
 module.exports = router;

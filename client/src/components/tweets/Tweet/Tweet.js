@@ -15,11 +15,19 @@ const Tweet = ({post}) => {
   const [retweeted, setRetweeted] = useState(false);
   const [likeCounter, setLikeCounter] = useState(post.likes.length);
 
-  const handleUserDetails = () => {
+  const handleUserDetails = (e) => {
     history.push(`/user/${post.user._id}`);
+
+    e.stopPropagation()
+  };
+  console.log('Post: ', post.likes.length);
+  const handlePostDetails = () => {
+    console.log('Post Details Route')
+    history.push(`/user/${post.user._id}/post/${post._id}`);
   };
 
-  const handleLike = () => {
+  const handleLike = (e) => {
+    console.log('Like/Unlike')
     if (liked) {
       setLikeCounter(likeCounter - 1);
       dispatch(unlikePost(post._id));
@@ -29,6 +37,9 @@ const Tweet = ({post}) => {
       dispatch(likePost(post._id));
       setLiked(true);
     }
+
+    e.stopPropagation()
+
   };
 
   const likeValue = liked ? {color: 'red'} : {color: 'gray'};
@@ -37,139 +48,48 @@ const Tweet = ({post}) => {
     post.likes.forEach((like) => like.user === authUser && setLiked(true));
   }, []);
 
-  // console.log('Reply To Post: ', post.replyTo.handle)
-
   return (
-    <>
-      {post.replyTo ? (
-        <div className="reply">
-          <div className={post.replyTo ? 'tweet--borderless' : 'tweet'}>
-            <img
-              onClick={handleUserDetails}
-              className="tweet__profileImage"
-              src=""
-              alt=""
-            />
-            <section>
-              <header>
-                <div className="tweet__displayName">{post.replyTo.handle}</div>
-                <div className="tweet__handle">@{post.replyTo.handle}</div>
-              </header>
-              <p className="tweet__text">{post.replyTo.text}</p>
-              <img className="tweet__graphic" src="" alt="" />
-              <footer className="tweet__footer">
-                <ul>
-                  <li>
-                    <i class="far fa-comment"></i> <span>4</span>
-                  </li>
-                  <li>
-                    {' '}
-                    <i class="fas fa-retweet"></i>
-                    <span>12</span>
-                  </li>
-                  <li onClick={handleLike}>
-                    {liked ? (
-                      <i style={{color: 'red'}} class="fas fa-heart"></i>
-                    ) : (
-                      <i class="far fa-heart"></i>
-                    )}{' '}
-                    <span style={likeValue}>
-                      {likeCounter === 0 ? '' : likeCounter}
-                    </span>
-                  </li>
-                  <li>
-                    <i class="fas fa-external-link-alt"></i>
-                  </li>
-                </ul>
-              </footer>
-            </section>
-          </div>{' '}
-          <div className="tweet">
-            <img
-              onClick={handleUserDetails}
-              className="tweet__profileImage"
-              src=""
-              alt=""
-            />
-            <section>
-              <header>
-                <div className="tweet__displayName">{post.handle}</div>
-                <div className="tweet__handle">@{post.handle}</div>
-              </header>
-              <p className="tweet__text">{post.text}</p>
-              <img className="tweet__graphic" src="" alt="" />
-              <footer className="tweet__footer">
-                <ul>
-                  <li>
-                    <i class="far fa-comment"></i> <span>4</span>
-                  </li>
-                  <li>
-                    {' '}
-                    <i class="fas fa-retweet"></i>
-                    <span>12</span>
-                  </li>
-                  <li onClick={handleLike}>
-                    {liked ? (
-                      <i style={{color: 'red'}} class="fas fa-heart"></i>
-                    ) : (
-                      <i class="far fa-heart"></i>
-                    )}{' '}
-                    <span style={likeValue}>
-                      {likeCounter === 0 ? '' : likeCounter}
-                    </span>
-                  </li>
-                  <li>
-                    <i class="fas fa-external-link-alt"></i>
-                  </li>
-                </ul>
-              </footer>
-            </section>
-          </div>
-        </div>
-      ) : (
-        <div className="tweet">
-          <img
-            onClick={handleUserDetails}
-            className="tweet__profileImage"
-            src=""
-            alt=""
-          />
-          <section>
-            <header>
-              <div className="tweet__displayName">{post.handle}</div>
-              <div className="tweet__handle">@{post.handle}</div>
-            </header>
-            <p className="tweet__text">{post.text}</p>
-            <img className="tweet__graphic" src="" alt="" />
-            <footer className="tweet__footer">
-              <ul>
-                <li>
-                  <i class="far fa-comment"></i> <span>4</span>
-                </li>
-                <li>
-                  {' '}
-                  <i class="fas fa-retweet"></i>
-                  <span>12</span>
-                </li>
-                <li onClick={handleLike}>
-                  {liked ? (
-                    <i style={{color: 'red'}} class="fas fa-heart"></i>
-                  ) : (
-                    <i class="far fa-heart"></i>
-                  )}{' '}
-                  <span style={likeValue}>
-                    {likeCounter === 0 ? '' : likeCounter}
-                  </span>
-                </li>
-                <li>
-                  <i class="fas fa-external-link-alt"></i>
-                </li>
-              </ul>
-            </footer>
-          </section>
-        </div>
-      )}
-    </>
+    <div onClick={handlePostDetails} className="tweet">
+      <img
+        onClick={handleUserDetails}
+        className="tweet__profileImage"
+        src=""
+        alt=""
+      />
+      <section>
+        <header>
+          <div className="tweet__displayName">{post.handle}</div>
+          <div className="tweet__handle">@{post.handle}</div>
+        </header>
+        <p className="tweet__text">{post.text}</p>
+        <img className="tweet__graphic" src="" alt="" />
+        <footer className="tweet__footer">
+          <ul>
+            <li>
+              <i class="far fa-comment"></i> <span>4</span>
+            </li>
+            <li>
+              {' '}
+              <i class="fas fa-retweet"></i>
+              <span>12</span>
+            </li>
+            <li onClick={handleLike}>
+              {liked ? (
+                <i style={{color: 'red'}} class="fas fa-heart"></i>
+              ) : (
+                <i class="far fa-heart"></i>
+              )}{' '}
+              <span style={likeValue}>
+                {likeCounter === 0 ? '' : likeCounter}
+              </span>
+            </li>
+            <li>
+              <i class="fas fa-external-link-alt"></i>
+            </li>
+          </ul>
+        </footer>
+      </section>
+    </div>
   );
 };
 

@@ -15,13 +15,13 @@ import {
   getUsersLikedPosts,
   getFollowers,
   clearUserDetailsFromStorage,
+  follow,
 } from 'redux/auth/auth.actions';
 import {render} from '@testing-library/react';
 
 class Profile extends React.Component {
   state = {
     isModalPresent: false,
-    tabContent: [],
     tabs: [
       {
         id: 1,
@@ -68,13 +68,11 @@ class Profile extends React.Component {
     });
 
     if (newActiveTab.label === 'Tweets') {
-      // dispatch(getUserDetails(match.params.id));
       this.props.getUserDetails(this.props.match.params.id);
     } else if (newActiveTab.label === 'Likes') {
-      // dispatch(getUserDetails(match.params.id));
       this.props.getUserDetails(this.props.match.params.id);
     }
-    // setTabs(updatedTabs);
+
     this.setState({...this.state, tabs: updatedTabs});
   };
 
@@ -116,57 +114,48 @@ class Profile extends React.Component {
 
   renderTabContent = () => {
     const activeTab = this.state.tabs.find((tab) => tab.isActive === true);
-    if (activeTab.label === 'Tweets') {
-      return (
-        <TweetFeed
-          isLoading={this.props.isLoading}
-          posts={this.props.userDetails.posts}
-        />
-      );
-    } else if (activeTab.label === 'Likes') {
-      return (
-        <TweetFeed
-          isLoading={this.props.isLoading}
-          posts={this.props.userDetails.likes}
-        />
-      );
+
+    switch (activeTab.label) {
+      case 'Tweets':
+        const updatedPosts = this.props.userDetails.posts.filter(
+          (post) => !post.replyTo
+        );
+        return (
+          <TweetFeed isLoading={this.props.isLoading} posts={updatedPosts} />
+        );
+
+      case 'Tweets & Replies':
+        return (
+          <TweetFeed
+            isLoading={this.props.isLoading}
+            posts={this.props.userDetails.posts}
+          />
+        );
+
+      case 'Likes':
+        return (
+          <TweetFeed
+            isLoading={this.props.isLoading}
+            posts={this.props.userDetails.likes}
+          />
+        );
     }
   };
 
-  // useEffect(() => {
-  //   console.log('Match Params: ', match)
-  //   dispatch(getUserDetails(match.params.id));
-  // }, []);
+  handleFollow = () => {
+    this.props.follow(this.props.match.params.id);
+  };
 
-  componentWillMount() {
-    console.log('Component Will Mount');
-  }
+  handleFollowers = () => {
+    this.props.history.push(`/user/${this.props.userDetails._id}/followers`);
+  };
+
+  handleFollowing = () => {
+    this.props.history.push(`/user/${this.props.userDetails._id}/following`);
+  };
 
   componentDidMount() {
-    console.log('Component Did Mount');
     this.props.getUserDetails(this.props.match.params.id);
-  }
-
-  componentWillUnmount() {
-    console.log('Component Will Unmount');
-    // this.props.clearUserDetailsFromStorage();
-    console.log('URL: ', this.props.match.url);
-    // console.log(location.reload())
-
-    // this.props.history.push(`/user/${this.props.match.params.id}`)
-  }
-
-  componentWillUpdate() {
-    console.log('Component Will Update');
-  }
-
-  componentDidUpdate() {
-    console.log('Component Did Update');
-  }
-
-  shouldComponentUpdate() {
-    console.log('Should Component Update');
-    return true;
   }
 
   render() {
@@ -192,7 +181,9 @@ class Profile extends React.Component {
                     Edit Profile
                   </button>
                 ) : (
-                  <div className="profile__editBtn">Follow</div>
+                  <div onClick={this.handleFollow} className="profile__editBtn">
+                    Follow
+                  </div>
                 )}
               </div>
 
@@ -217,12 +208,16 @@ class Profile extends React.Component {
               </div>
 
               <div className="profile__follow">
-                <div>
-                  <span className="profile__followingCount">37</span>
+                <div onClick={this.handleFollowing}>
+                  <span className="profile__followingCount">
+                    {this.props.userDetails.following.length}
+                  </span>
                   <span className="profile__followingText">Following</span>
                 </div>
                 <div onClick={this.handleFollowers}>
-                  <span className="profile__followersCount">36</span>
+                  <span className="profile__followersCount">
+                    {this.props.userDetails.followers.length}
+                  </span>
                   <span className="profile__followersText">Followers</span>
                 </div>
               </div>
@@ -265,5 +260,6 @@ export default connect(mapStateToProps, {
   getUsersPosts,
   getUsersLikedPosts,
   getFollowers,
+  follow,
   clearUserDetailsFromStorage,
 })(Profile);

@@ -5,10 +5,12 @@ import {
   REQUEST_SENT,
   LIKE_POST,
   UNLIKE_POST,
+  GET_POST_BY_ID,
 } from './post.types';
 
 const initialState = {
   posts: [],
+  post: {},
   isLoading: true,
 };
 
@@ -43,6 +45,12 @@ export default (state = initialState, action) => {
       return {
         ...state,
         posts: payload,
+        isLoading: false,
+      };
+    case GET_POST_BY_ID:
+      return {
+        ...state,
+        post: payload,
         isLoading: false,
       };
     default:

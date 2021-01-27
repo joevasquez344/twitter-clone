@@ -53,6 +53,9 @@
   color: white;
   font-weight: bold;
   border: none;
+  display:flex;
+  justify-content: center;
+  align-items: center;
 }
 
 @mixin transparent_btn {

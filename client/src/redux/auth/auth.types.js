@@ -16,4 +16,6 @@ export const GET_USERS_POSTS = "GET_USERS_POSTS";
 export const GET_USERS_LIKED_POSTS = "GET_USERS_LIKED_POSTS";
 
 export const GET_FOLLOWERS = 'GET_FOLLOWERS';
+export const GET_FOLLOWING = 'GET_FOLLOWING';
+export const FOLLOW = 'FOLLOW';
 

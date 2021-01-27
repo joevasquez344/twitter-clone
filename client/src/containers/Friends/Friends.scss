@@ -7,15 +7,28 @@
     height: 6vh;
     border-bottom: 2px solid $twitter-gray;
 
-    span {
+
+  }
+
+  &__tab {
+    width: 50%;
+    color: gray;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &--active {
       width: 50%;
-      color: gray;
+      color: $twitter-blue;
+      border-bottom: 2px solid $twitter-blue;
       font-weight: bold;
       display: flex;
       justify-content: center;
       align-items: center;
     }
   }
+
 
   &__item {
     padding: 15px;
@@ -36,11 +49,6 @@
       display: flex;
       justify-content: space-between;
       width: 100%;
-
-      button {
-        @include transparent-btn;
-        padding: 0 20px 0 20px;
-      }
     }
 
     img {
