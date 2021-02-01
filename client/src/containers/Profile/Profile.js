@@ -1,14 +1,14 @@
 import React, {useState, useEffect} from 'react';
 import './Profile.scss';
 
-import {useDispatch, useSelector} from 'react-redux';
-
 import {useHistory} from 'react-router-dom';
 import {connect} from 'react-redux';
 
+import Spinner from 'react-bootstrap/Spinner';
 import TweetFeed from 'components/tweets/TweetFeed/TweetFeed';
 import Header from 'layout/Header';
 import UpdateProfileModal from 'components/modals/UpdateProfileModal';
+import FollowingButton from 'components/buttons/FollowingButton/FollowingButton';
 import {
   getUserDetails,
   getUsersPosts,
@@ -16,17 +16,21 @@ import {
   getFollowers,
   clearUserDetailsFromStorage,
   follow,
+  unfollow,
 } from 'redux/auth/auth.actions';
-import {render} from '@testing-library/react';
+import UnfollowModal from 'components/modals/UnfollowModal/UnfollowModal';
+import Tabs from 'components/Tabs/Tabs';
 
 class Profile extends React.Component {
   state = {
-    isModalPresent: false,
+    editProfileModal: false,
+    unfollowModal: false,
+    isFollowing: false,
     tabs: [
       {
         id: 1,
         label: 'Tweets',
-        isActive: true,
+        isActive: false,
       },
       {
         id: 2,
@@ -45,9 +49,6 @@ class Profile extends React.Component {
       },
     ],
   };
-
-  hideModal = () => this.setState({...this.state, isModalPresent: false});
-  showModal = () => this.setState({...this.state, isModalPresent: true});
 
   handleTabClick = (id) => {
     const currentActiveTab = this.state.tabs.find(
@@ -68,106 +69,162 @@ class Profile extends React.Component {
     });
 
     if (newActiveTab.label === 'Tweets') {
-      this.props.getUserDetails(this.props.match.params.id);
+      this.props.getUserDetails(this.props.userDetails);
+      this.props.history.push(`/${this.props.userDetails.handle}`);
     } else if (newActiveTab.label === 'Likes') {
-      this.props.getUserDetails(this.props.match.params.id);
+      this.props.history.push(`/${this.props.userDetails.handle}/likes`);
+      this.props.getUserDetails(this.props.userDetails);
     }
 
     this.setState({...this.state, tabs: updatedTabs});
   };
 
-  handleFollowers = () => {
-    // this.props.getFollowers(this.props.match.params.id);
-
-    this.props.history.push(`/user/${this.props.match.params.id}/followers`);
-  };
-
-  // BACKEND WORK - TODO
-  // Create new routes that target specifics, such as getUsersPosts, getUsersLikedPosts (already done), getUsersMedia, etc.
-  // Every one of these end points will give a rerender for the TweetFeed component
-  // This will help keep up to date with new user data
-  // EXAMPLE: Say you click on another users profile... you would have that users current data at that time, but say
-  // you have been idle for 10 minutes on that users profile and that user has been tweeting and liking posts in the mean time, you would be
-  // able to have this users new/updated data if you click on the tabs: tweets, likes, etc. due to fetching this data every time you click on those tabs
-
-  // FRONTEND WORK - TODO
-  // When the Profile components mounts, check to see which tab is active... fetch data according to the tab status
-  // (tweets - getUsersTweets, likes - getUsersLikedPosts, etc.)
-
-  // Once the Profile component mounts and the tab status checker has ran, for every tab click after, fetch data based on tab status and check to see if state has changed, then rerender
-  // if there is new data
-
-  // Keep in mind, whenever a new tab is active/clicked, no matter what, fetch relevant data from the DB, and check to see if that recent data fetched
-  // is different from the current state of your redux store, if so, rerender with the new data, if not dont rerender and keep
-  // current state
-  // PURPOSE - Eliminates unnecessary rerenders and helps perfomance
-
-  // FINAL NOTE FOR THESE COMMENTS
-  // Think about this more because there are better ways
-  // Tweak backend getUserDetails endpoint to return less data than needed
-  // Only return users tweets instead of the whole userDetails object
-  // (Currently, I'm technically making 2 DB fetches on Profile component mount and requesting similar/same data)
-  // (If i'm forcing to show the users tweets first when the Profile component mounts, just fetch users tweets only from DB)
-  // You will fetch more of this users data when you interact more with his/her profile
-  // ( Maybe this is the wave of the data fetching flow with web development?? )
-  // ( I feel like sending back a huge object based on a profile fetch isn't the move )
-
   renderTabContent = () => {
     const activeTab = this.state.tabs.find((tab) => tab.isActive === true);
 
-    switch (activeTab.label) {
-      case 'Tweets':
-        const updatedPosts = this.props.userDetails.posts.filter(
-          (post) => !post.replyTo
-        );
-        return (
-          <TweetFeed isLoading={this.props.isLoading} posts={updatedPosts} />
-        );
+    if (activeTab) {
+      switch (activeTab.label) {
+        case 'Tweets':
+          const updatedPosts = this.props.userDetails.posts.filter(
+            (post) => !post.replyTo
+          );
+          return (
+            <>
+              {this.props.isLoading ? (
+                <div className="spinner">
+                  {' '}
+                  {/* Spinner wont work because I am not fetching tweets here. Everthing is fetched at once on Profile mount */}
+                  <Spinner animation="border" variant="primary" />
+                </div>
+              ) : (
+                <TweetFeed
+                  isLoading={this.props.isLoading}
+                  posts={updatedPosts}
+                />
+              )}
+            </>
+          );
 
-      case 'Tweets & Replies':
-        return (
-          <TweetFeed
-            isLoading={this.props.isLoading}
-            posts={this.props.userDetails.posts}
-          />
-        );
+        case 'Tweets & Replies':
+          return (
+            <TweetFeed
+              isLoading={this.props.isLoading}
+              posts={this.props.userDetails.posts}
+            />
+          );
 
-      case 'Likes':
-        return (
-          <TweetFeed
-            isLoading={this.props.isLoading}
-            posts={this.props.userDetails.likes}
-          />
-        );
+        case 'Likes':
+          return (
+            <TweetFeed
+              isLoading={this.props.isLoading}
+              posts={this.props.userDetails.likes}
+            />
+          );
+      }
     }
   };
 
+  hideEditProfileModal = () =>
+    this.setState({...this.state, editProfileModal: false});
+  showEditProfileModal = () =>
+    this.setState({...this.state, editProfileModal: true});
+
+  hideUnfollowModal = () => this.setState({unfollowModal: false});
+  showUnfollowModal = () => this.setState({unfollowModal: true});
+
+  unfollowConfirmation = () => this.showUnfollowModal();
+
   handleFollow = () => {
-    this.props.follow(this.props.match.params.id);
+    this.props.follow(this.props.userDetails._id);
+    this.setState({isFollowing: true});
+  };
+  handleUnfollow = (handle) => {
+    const match = this.props.userDetails.followers.find(
+      (u) => u === this.props.user._id
+    );
+    console.log('match match: ', match);
+    if (match) {
+      this.props.unfollow(handle);
+    }
   };
 
-  handleFollowers = () => {
-    this.props.history.push(`/user/${this.props.userDetails._id}/followers`);
+  handleFollowers = () =>
+    this.props.history.push(`/${this.props.userDetails.handle}/followers`);
+
+  handleFollowing = () =>
+    this.props.history.push(`/${this.props.userDetails.handle}/following`);
+
+  setFollowButton = () => {
+    this.setState({isFollowing: false});
   };
 
-  handleFollowing = () => {
-    this.props.history.push(`/user/${this.props.userDetails._id}/following`);
+  updateTabs = (status) => {
+    const updatedTabs = this.state.tabs.map((tab) => {
+      if (tab.label === status) {
+        tab.isActive = true;
+      }
+
+      return tab;
+    });
+
+    this.setState({tabs: updatedTabs});
   };
 
-  componentDidMount() {
-    this.props.getUserDetails(this.props.match.params.id);
+  async componentDidMount() {
+    const userDetails = await this.props.getUserDetails(
+      this.props.match.params.handle
+    );
+
+    if (this.props.history.location.pathname.split('/')[2] === undefined) {
+      this.updateTabs('Tweets');
+    } else if (this.props.history.location.pathname.split('/')[2] === 'likes') {
+      this.updateTabs('Likes');
+    } else if (
+      this.props.history.location.pathname.split('/')[2] === 'with_replies'
+    ) {
+      // GET USERS TWEETS WITH REPLIES
+    } else if (this.props.history.location.pathname.split('/')[2] === 'media') {
+      // GET USERS MEDIA TWEETS
+    }
+
+    const following = userDetails.followers.find(
+      (u) => u === this.props.user._id
+    );
+
+    if (following) return this.setState({isFollowing: true});
+    else return this.setState({isFollowing: false});
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    console.log('Next State: ', nextState);
+    if (this.state.tabs !== nextState.tabs) {
+      return false;
+    } else {
+      return true;
+    }
+    // const currentActiveTab = this.state.tabs.find(
+    //   (tab) => tab.isActive === true
+    // );
+    // this.state.tabs.forEach(tab => {
+    //   if(currentActiveTab.id === tab.id) {
+
+    //   }
+    // })
   }
 
   render() {
+    console.log('Prop', this.props);
     return (
       <>
         {this.props.isLoading ? (
-          <h1>Loading</h1>
+          <div className="spinner">
+            <Spinner animation="border" variant="primary" />
+          </div>
         ) : (
           <div className="profile">
             <Header />
-            {this.state.isModalPresent ? (
-              <UpdateProfileModal hideModal={this.hideModal} />
+            {this.state.editProfileModal ? (
+              <UpdateProfileModal hideModal={this.hideEditProfileModal} />
             ) : null}
             <div className="profile__banner">
               <img src="" alt="" />
@@ -177,9 +234,29 @@ class Profile extends React.Component {
               <div className="profile__config">
                 <img src="" className="profile__image" />
                 {this.props.user._id === this.props.userDetails._id ? (
-                  <button onClick={this.showModal} className="profile__editBtn">
+                  <button
+                    onClick={this.showEditProfileModal}
+                    className="profile__editBtn"
+                  >
                     Edit Profile
                   </button>
+                ) : this.state.isFollowing ? (
+                  <>
+                    <div className="profile__followingBtn">
+                      {' '}
+                      <FollowingButton
+                        unfollowConfirmation={this.unfollowConfirmation}
+                      />
+                    </div>
+                    {this.state.unfollowModal ? (
+                      <UnfollowModal
+                        hideModal={this.hideUnfollowModal}
+                        handleUnfollow={this.handleUnfollow}
+                        user={this.props.userDetails}
+                        setFollowButton={this.setFollowButton}
+                      />
+                    ) : null}
+                  </>
                 ) : (
                   <div onClick={this.handleFollow} className="profile__editBtn">
                     Follow
@@ -223,23 +300,11 @@ class Profile extends React.Component {
               </div>
             </div>
 
-            <div className="profile__tabs">
-              <ul>
-                {this.state.tabs.map((tab) => {
-                  return (
-                    <li
-                      className={
-                        tab.isActive ? 'profile__tab--active' : 'profile__tab'
-                      }
-                      onClick={() => this.handleTabClick(tab.id)}
-                      key={tab.id}
-                    >
-                      {tab.label}
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
+            <Tabs
+              tabs={this.state.tabs}
+              handleTabClick={this.handleTabClick}
+              userDetails={this.props.userDetails}
+            />
             {this.renderTabContent()}
           </div>
         )}
@@ -261,5 +326,6 @@ export default connect(mapStateToProps, {
   getUsersLikedPosts,
   getFollowers,
   follow,
+  unfollow,
   clearUserDetailsFromStorage,
 })(Profile);

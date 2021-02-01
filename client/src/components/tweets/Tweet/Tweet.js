@@ -16,11 +16,11 @@ const Tweet = ({post}) => {
   const [likeCounter, setLikeCounter] = useState(post.likes.length);
 
   const handleUserDetails = (e) => {
-    history.push(`/user/${post.user._id}`);
+    history.push(`/${post.user.handle}`);
 
     e.stopPropagation()
   };
-  console.log('Post: ', post.likes.length);
+
   const handlePostDetails = () => {
     console.log('Post Details Route')
     history.push(`/user/${post.user._id}/post/${post._id}`);

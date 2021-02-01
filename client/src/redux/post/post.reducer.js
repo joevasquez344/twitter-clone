@@ -3,9 +3,8 @@ import {
   GET_POSTS,
   CREATE_POST,
   REQUEST_SENT,
-  LIKE_POST,
-  UNLIKE_POST,
   GET_POST_BY_ID,
+  UPDATE_LIKES,
 } from './post.types';
 
 const initialState = {
@@ -35,16 +34,10 @@ export default (state = initialState, action) => {
         posts: [payload, ...state.posts],
         isLoading: false,
       };
-    case LIKE_POST:
+    case UPDATE_LIKES:
       return {
         ...state,
-        posts: payload,
-        isLoading: false,
-      };
-    case UNLIKE_POST:
-      return {
-        ...state,
-        posts: payload,
+        posts: state.posts.map(post => post._id === payload.id ? { ...post, likes: payload.likes} : post),
         isLoading: false,
       };
     case GET_POST_BY_ID:

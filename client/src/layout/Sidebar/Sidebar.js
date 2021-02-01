@@ -13,7 +13,9 @@ const Sidebar = (props) => {
   const [isModalPresent, setIsModalPresent] = useState(false);
 
   const {isLoading} = useSelector((state) => state.post);
-  const userID = useSelector((state) => state.auth.user._id);
+  const {handle, _id} = useSelector((state) => state.auth.user);
+
+  console.log('Handle: ', handle)
 
   const dispatch = useDispatch();
 
@@ -29,7 +31,7 @@ const Sidebar = (props) => {
   };
   const handleProfileRoute = () => {
     // dispatch(getUserDetails(userID));
-    history.push(`/user/${userID}`);
+    history.push(`/${handle}`);
   };
 
   useEffect(() => {

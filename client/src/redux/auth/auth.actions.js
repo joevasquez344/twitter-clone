@@ -1,5 +1,5 @@
-import firebase from "../../firebase/config";
-import axios from "axios";
+import firebase from '../../firebase/config';
+import axios from 'axios';
 
 import {
   REQUEST_SENT,
@@ -15,28 +15,21 @@ import {
   GET_USERS_LIKED_POSTS,
   GET_FOLLOWERS,
   FOLLOW,
+  UNFOLLOW,
   CLEAR_USER_DETAILS_FROM_STORAGE,
-  GET_FOLLOWING
-} from "./auth.types";
-
-// export const setUser = (user) => (dispatch) => {
-//   console.log(user)
-//   dispatch({
-//     type: SET_USER,
-//     payload: { uid: user.uid, email: user.email },
-//   });
-// };
+  GET_FOLLOWING,
+} from './auth.types';
 
 export const register = (handle, password, birthday) => async (dispatch) => {
-  const body = { handle, password, birthday };
+  const body = {handle, password, birthday};
 
   const config = {
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
   };
 
-  const { data } = await axios.post("/api/users", body, config);
+  const {data} = await axios.post('/api/users', body, config);
 
   if (data) {
     console.log(data);
@@ -45,11 +38,11 @@ export const register = (handle, password, birthday) => async (dispatch) => {
       payload: data,
     });
 
-    localStorage.setItem("user", JSON.stringify(data));
+    localStorage.setItem('user', JSON.stringify(data));
   } else {
     dispatch({
       type: REGISTER_FAILED,
-      payload: "Not Authenticated",
+      payload: 'Not Authenticated',
     });
   }
 };
@@ -62,10 +55,10 @@ export const login = (handle, password) => async (dispatch) => {
     };
     const config = {
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
     };
-    const { data, status } = await axios.post("/api/users/login", body, config);
+    const {data, status} = await axios.post('/api/users/login', body, config);
 
     const user = data;
 
@@ -74,7 +67,7 @@ export const login = (handle, password) => async (dispatch) => {
       payload: user,
     });
 
-    localStorage.setItem("user", JSON.stringify(user));
+    localStorage.setItem('user', JSON.stringify(user));
   } catch (error) {
     dispatch({
       type: LOGIN_FAILED,
@@ -108,7 +101,7 @@ export const logout = () => (dispatch) => {
     type: LOGOUT,
   });
 
-  localStorage.removeItem("user");
+  localStorage.removeItem('user');
   // firebase
   //   .auth()
   //   .signOut()
@@ -123,8 +116,8 @@ export const logout = () => (dispatch) => {
   //   });
 };
 
-export const getUserDetails = (id) => async (dispatch, getState) => {
-  console.log("User Id from actions: ", id);
+export const getUserDetails = (handle) => async (dispatch, getState) => {
+  console.log('User handle from actions: ', handle);
   try {
     dispatch({
       type: REQUEST_SENT,
@@ -132,7 +125,7 @@ export const getUserDetails = (id) => async (dispatch, getState) => {
 
     const token = getState().auth.user.token;
 
-    console.log("Token from action", token);
+    console.log('Token from action', token);
 
     const config = {
       headers: {
@@ -140,24 +133,26 @@ export const getUserDetails = (id) => async (dispatch, getState) => {
       },
     };
 
-    const { data } = await axios.get(`/api/users/${id}`, config);
-    console.log("User Details from action", data);
+    const {data} = await axios.get(`/api/users/${handle}`, config);
+    console.log('User Details from action', data);
 
     dispatch({
       type: USER_DETAILS_SUCCESS,
       payload: data,
     });
 
-    localStorage.setItem("userDetails", JSON.stringify(data));
+    localStorage.setItem('userDetails', JSON.stringify(data));
+    console.log('STAAAATE: ', getState().auth.userDetails);
+    return getState().auth.userDetails;
   } catch (error) {
     dispatch({
       type: USER_DETAILS_FAILED,
-      payload: "User Not Found",
+      payload: 'User Not Found',
     });
   }
 };
 
-export const getUsersPosts = (userID) => async (dispatch, getState) => {
+export const getUsersPosts = (handle) => async (dispatch, getState) => {
   try {
     dispatch({
       type: REQUEST_SENT,
@@ -171,7 +166,7 @@ export const getUsersPosts = (userID) => async (dispatch, getState) => {
       },
     };
 
-    const { data } = await axios.get(`/api/users/${userID}/posts`, config);
+    const {data} = await axios.get(`/api/users/${handle}/posts`, config);
 
     const posts = data;
 
@@ -184,21 +179,21 @@ export const getUsersPosts = (userID) => async (dispatch, getState) => {
   }
 };
 
-export const getUsersLikedPosts = (userID) => async (dispatch, getState) => {
+export const getUsersLikedPosts = (handle) => async (dispatch, getState) => {
   try {
     dispatch({
       type: REQUEST_SENT,
     });
 
     const token = getState().auth.user.token;
-    console.log("Token from action", token);
+    console.log('Token from action', token);
     const config = {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     };
 
-    const { data } = await axios.get(`/api/users/${userID}/likes`, config);
+    const {data} = await axios.get(`/api/users/${handle}/likes`, config);
 
     dispatch({
       type: GET_USERS_LIKED_POSTS,
@@ -209,11 +204,11 @@ export const getUsersLikedPosts = (userID) => async (dispatch, getState) => {
   }
 };
 
-export const getFollowers = (id) => async (dispatch, getState) => {
+export const getFollowers = (handle) => async (dispatch, getState) => {
   try {
     dispatch({
-      type: REQUEST_SENT
-    })
+      type: REQUEST_SENT,
+    });
     const token = getState().auth.user.token;
 
     const config = {
@@ -222,13 +217,13 @@ export const getFollowers = (id) => async (dispatch, getState) => {
       },
     };
 
-    const { data } = await axios.get(`/api/users/${id}/followers`, config);
+    const {data} = await axios.get(`/api/users/${handle}/followers`, config);
 
     console.log('DATAAA: ', data);
 
     const followers = data;
 
-    console.log("Followers: ", followers);
+    console.log('Followers: ', followers);
 
     dispatch({
       type: GET_FOLLOWERS,
@@ -239,57 +234,83 @@ export const getFollowers = (id) => async (dispatch, getState) => {
   }
 };
 
-export const follow = (id) => async (dispatch, getState) => {
+export const follow = (handle) => async (dispatch, getState) => {
   try {
     dispatch({
-      type: REQUEST_SENT
-    })
+      type: REQUEST_SENT,
+    });
     const token = getState().auth.user.token;
     const config = {
       headers: {
-        Authorization: `Bearer ${token}`
-      }
-    }
+        Authorization: `Bearer ${token}`,
+      },
+    };
 
-    const { data } = await axios.post(`/api/users/${id}/follow`, {}, config);
+    const {data} = await axios.post(`/api/users/${handle}/follow`, {}, config);
+
+    const followers = data;
 
     dispatch({
       type: FOLLOW,
-      payload: data
-    })
+      payload: followers
+    });
   } catch (error) {
     console.error(error.message);
   }
-}
+};
+export const unfollow = (handle) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: REQUEST_SENT,
+    });
+    const token = getState().auth.user.token;
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
 
-export const getFollowing = (id) => async (dispatch, getState) => {
-   try {
-     dispatch({
-       type: REQUEST_SENT,
-     })
+    const {data} = await axios.put(`/api/users/${handle}/unfollow`, {}, config);
 
-     const token = getState().auth.user.token;
+    const followers = data;
 
-     const config = {
-       headers: {
-         Authorization: `Bearer ${token}`
-       }
-     }
+    dispatch({
+      type: UNFOLLOW,
+      payload: followers,
+    });
+  } catch (error) {
+    console.error(error.message);
+  }
+};
 
-     const {data} = await axios.get(`/api/users/${id}/following`, config)
+export const getFollowing = (handle) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: REQUEST_SENT,
+    });
 
-     dispatch({
-       type: GET_FOLLOWING,
-       payload: data
-     })
-   } catch (error) {
-     console.error(error)
-   }
-}
+    const token = getState().auth.user.token;
 
-export const clearUserDetailsFromStorage = () => dispatch => {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    const {data} = await axios.get(`/api/users/${handle}/following`, config);
+
+    dispatch({
+      type: GET_FOLLOWING,
+      payload: data,
+    });
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const clearUserDetailsFromStorage = () => (dispatch) => {
   dispatch({
-    type: CLEAR_USER_DETAILS_FROM_STORAGE
-  })
-  localStorage.removeItem("userDetails");
-}
+    type: CLEAR_USER_DETAILS_FROM_STORAGE,
+  });
+  localStorage.removeItem('userDetails');
+};

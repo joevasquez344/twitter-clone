@@ -2,8 +2,7 @@ import {
   GET_POSTS,
   CREATE_POST,
   REQUEST_SENT,
-  LIKE_POST,
-  UNLIKE_POST,
+  UPDATE_LIKES,
   GET_POST_BY_ID,
 } from './post.types';
 import axios from 'axios';
@@ -87,7 +86,7 @@ export const likePost = (id) => async (dispatch, getState) => {
     console.log('New Posts with updated likes: ', posts);
 
     dispatch({
-      type: LIKE_POST,
+      type: UPDATE_LIKES,
       payload: posts,
     });
   } catch (error) {
@@ -126,7 +125,7 @@ export const unlikePost = (id) => async (dispatch, getState) => {
     console.log('New Posts with updated likes: ', posts);
 
     dispatch({
-      type: UNLIKE_POST,
+      type: UPDATE_LIKES,
       payload: posts,
     });
   } catch (error) {

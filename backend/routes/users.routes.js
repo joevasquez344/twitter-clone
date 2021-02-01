@@ -18,19 +18,19 @@ const {
 
 router.route("/").post(register).get(protect, getUsers);
 
-router.get("/:id", protect, getUserById);
+router.get("/:handle", protect, getUserById);
 
 router.post("/login", login);
 
 router.route("/profile").put(protect, updateProfile);
 
-router.route("/:id/posts").get(protect, getUsersPosts);
-router.route("/:id/likes").get(protect, getUsersLikedPosts);
+router.route("/:handle/posts").get(protect, getUsersPosts);
+router.route("/:handle/likes").get(protect, getUsersLikedPosts);
 
-router.route('/:id/follow').post(protect, followUser)
-router.route('/:id/unfollow').put(protect, unfollowUser)
-router.route("/:id/followers").get(protect, getUsersFollowers);
-router.route("/:id/following").get(protect, getUsersFollowing);
+router.route('/:handle/follow').post(protect, followUser)
+router.route('/:handle/unfollow').put(protect, unfollowUser)
+router.route("/:handle/followers").get(protect, getUsersFollowers);
+router.route("/:handle/following").get(protect, getUsersFollowing);
 
 // router.get('/profile/:id', protect, getLoggedInProfile);
 module.exports = router;

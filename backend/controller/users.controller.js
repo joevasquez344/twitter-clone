@@ -1,24 +1,24 @@
-const User = require("../models/User");
-const Post = require("../models/Post");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const asyncHandler = require("express-async-handler");
+const User = require('../models/User');
+const Post = require('../models/Post');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const asyncHandler = require('express-async-handler');
 
 // @desc    Log In User
 // @route   POST /api/users/login
 // @access  Public
 const login = asyncHandler(async (req, res) => {
-  const { handle, password } = req.body;
+  const {handle, password} = req.body;
 
-  const user = await User.findOne({ handle });
+  const user = await User.findOne({handle});
 
   const passwordMatch = await bcrypt.compare(password, user.password);
 
   console.log(passwordMatch);
 
   if (user && passwordMatch) {
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "30d",
+    const token = jwt.sign({id: user._id}, process.env.JWT_SECRET, {
+      expiresIn: '30d',
     });
 
     res.json({
@@ -29,7 +29,7 @@ const login = asyncHandler(async (req, res) => {
     });
   } else {
     res.status(401);
-    throw new Error("Invalid username or password");
+    throw new Error('Invalid username or password');
   }
 });
 
@@ -37,12 +37,15 @@ const login = asyncHandler(async (req, res) => {
 // @route   POST /api/users
 // @access  Public
 const register = asyncHandler(async (req, res) => {
-  const { handle, password, birthday } = req.body;
+  const {handle, password, birthday} = req.body;
 
-  const userExist = await User.findOne({ handle });
+  if (!handle || !password)
+    return res.json({error: 'One or more fields are empty'});
+
+  const userExist = await User.findOne({handle});
 
   if (userExist) {
-    throw new Error("User already exists");
+    throw new Error('User already exists');
   }
 
   const salt = await bcrypt.genSalt(10);
@@ -55,8 +58,8 @@ const register = asyncHandler(async (req, res) => {
   });
 
   if (user) {
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "30d",
+    const token = jwt.sign({id: user._id}, process.env.JWT_SECRET, {
+      expiresIn: '30d',
     });
 
     res.status(201).json({
@@ -79,7 +82,7 @@ const getUsers = asyncHandler(async (req, res) => {
   if (users) {
     res.status(200).json(users);
   } else {
-    throw new Error("Could not fetch users");
+    throw new Error('Could not fetch users');
   }
 });
 
@@ -87,13 +90,13 @@ const getUsers = asyncHandler(async (req, res) => {
 // @route   GET /api/users/:id
 // @access  Private
 const getUserById = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.params.id).select("-password").populate({
-    path: "likes",
+  const user = await User.findOne({handle: req.user.handle}).select('-password').populate({
+    path: 'likes',
   });
 
-  const posts = await Post.find({ user: req.params.id });
+  const posts = await Post.find({user: req.params.id});
 
-  console.log("Posts: ", posts);
+  console.log('Posts: ', posts);
 
   if (user) {
     user.posts = posts;
@@ -103,7 +106,7 @@ const getUserById = asyncHandler(async (req, res) => {
     res.status(200).json(user);
   } else {
     res.status(404);
-    throw new Error("User not found");
+    throw new Error('User not found');
   }
 });
 
@@ -111,13 +114,13 @@ const getUserById = asyncHandler(async (req, res) => {
 // @route   PUT /api/users/profile
 // @access  Private
 const updateProfile = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.user._id);
+  const user = await User.findOne({handle: req.user.handle});
 
-  console.log("Req User from update profile: ", req.user);
+  console.log('Req User from update profile: ', req.user);
 
   if (user) {
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "30d",
+    const token = jwt.sign({id: user._id}, process.env.JWT_SECRET, {
+      expiresIn: '30d',
     });
 
     user.name = req.body.name || user.name;
@@ -148,7 +151,7 @@ const updateProfile = asyncHandler(async (req, res) => {
 // @route   GET /api/users/:id/posts
 // @access  Private
 const getUsersPosts = asyncHandler(async (req, res) => {
-  const posts = await Post.find({ user: req.params.id });
+  const posts = await Post.find({user: req.params.handle});
 
   res.json(posts);
 });
@@ -165,93 +168,80 @@ const getUsersLikedPosts = asyncHandler(async (req, res) => {
 });
 
 const followUser = asyncHandler(async (req, res) => {
-  const userToFollow = await User.findById(req.params.id);
-  const loggedInUser = await User.findById(req.user.id);
+  const profile = await User.findById(req.params.id);
+  const user = await User.findOne({handle: req.user.handle});
+ 
+  // let userMatch = profile.followers.find((user) => user == user._id);
 
-  // Check to see if the logged in user already exists in the followers array
-  let userMatch = userToFollow.followers.find((user) => user == req.user.id);
 
-  console.log("User Match: ", userMatch);
+  let userMatch = profile.followers.includes(user._id);
+  console.log('MATCHHHH: ', userMatch)
 
-  if (userMatch == req.user.id) {
+  if (userMatch) {
     return res.json({
       message: {
-        error: "You already follow this user",
+        error: 'You already follow this user',
       },
     });
+  } else {
+    profile.followers.push(user);
+    user.following.push(profile);
+  
+    console.log('Follow Profile: ', profile);
+    console.log('Follow User: ', user);
+  
+    await profile.save();
+    await user.save();
+  
+    res.status(200).json(profile.followers);
   }
 
-  userToFollow.followers.push(req.user);
-  loggedInUser.following.push(req.params.id);
-
-  await userToFollow.save();
-  await loggedInUser.save();
-
-  res.status(200).json(loggedInUser.following);
+ 
 });
 
 const unfollowUser = asyncHandler(async (req, res) => {
-  const userToUnfollow = await User.findById(req.params.id);
-  const loggedInUser = await User.findById(req.user.id);
+  const profile = await User.findById(req.params.id);
+  const user = await User.findOne(req.user.handle);
+
+  console.log('User: ', user);
+
+  let userMatch = profile.followers.includes(user._id);
 
 
-  let userMatch = userToUnfollow.followers.find((user) => user == req.user.id);
+  console.log('MATCHHHH: ', userMatch)
 
   if (userMatch) {
-    const updatedFollowers = userToUnfollow.followers.filter((user) => user != req.user.id);
-    const updatedFollowing = loggedInUser.following.filter(user => user != req.params.id);
+    const profileFollowers = profile.followers.filter((u) => u != user._id);
+    const userFollowing = user.following.filter((u) => u != profile._id);
 
-    userToUnfollow.followers = updatedFollowers;
-    loggedInUser.following = updatedFollowing;
+    profile.followers = profileFollowers;
+    user.following = userFollowing;
 
-    await userToUnfollow.save();
-    await loggedInUser.save();
+    console.log('YOUR: ', profileFollowers)
 
-    res.status(200).json({
-      message: "User unfollowed",
-      followers: userToUnfollow.followers,
-    });
+    await profile.save();
+    await user.save();
+
+    res.status(200).json(profile.followers);
   } else {
     return res.json({
       message: {
-        error: "Cannot unfollow because you do not follow this user",
+        error: 'Cannot unfollow because you do not follow this user',
       },
     });
   }
 });
 
 const getUsersFollowers = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.params.id).populate("followers");
+  const user = await User.findOne({handle: req.user.handle}).populate('followers');
 
-  const followers = user.followers.map(user => {
-    const updatedUser = {};
-
-    updatedUser._id = user._id;
-    updatedUser.handle = user.handle;
-
-    return updatedUser;
-  })
-
-  console.log('Followers: ', user.followers)
-
-  res.json(followers);
+  res.json(user.followers);
 });
 
 const getUsersFollowing = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.params.id).populate("following");
+  const user = await User.findOne({handle: req.user.handle}).populate('following');
 
-  const following = user.following.map(user => {
-    const updatedUser = {};
-
-    updatedUser._id = user._id;
-    updatedUser.handle = user.handle;
-
-    return updatedUser;
-  })
-
-  console.log('Following: ', user.following)
-
-  res.json(following);
+  res.json(user.following);
 });
 
 module.exports = {

@@ -1,7 +1,8 @@
-import React, { useState } from "react";
-// import "./Landing.css";
+import React, { useState, useEffect } from "react";
 import "./Landing.scss";
 import { useHistory } from "react-router-dom";
+
+import {useSelector} from 'react-redux'
 
 import SignUpModal from "components/modals/SignUpModal/SignUpModal";
 import TwitterIcon from "components/icons/TwitterIcon";
@@ -11,8 +12,16 @@ const Landing = () => {
 
   const history = useHistory();
 
+  const user = useSelector(state => state.auth.user);
+
   const hideModal = () => setIsModalPresent(false);
   const showModal = () => setIsModalPresent(true);
+
+  useEffect(() => {
+    if (user) {
+      history.push('/');
+    }
+  }, [user]);
 
   return (
     <div className="landing">

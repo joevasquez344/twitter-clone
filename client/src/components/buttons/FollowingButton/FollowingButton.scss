@@ -5,7 +5,7 @@
   @include blue_btn;
   width: 105px;
   transition: 0.4s ease-in-out;
-  padding: 4px;
+  height: 30px;
   margin-bottom: 8px;
 }
 
@@ -15,10 +15,13 @@
   border: none;
   color: white;
   font-weight: bold;
-  padding: 4px;
+  height: 30px;
   border-radius: 500px;
   display: flex;
   justify-content: center;
   margin-bottom: 8px;
   align-items: center;
+  @include transition
 }
+
+

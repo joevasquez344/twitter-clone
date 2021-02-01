@@ -7,3 +7,11 @@
 textarea:focus {
   outline: none;
 }
+ 
+.spinner {
+  width: 100%;
+  height: 100%;
+  display:flex;
+  justify-content: center;
+  padding-top: 30px;
+}

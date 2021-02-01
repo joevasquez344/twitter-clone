@@ -1,11 +1,11 @@
-@import "../../scss/1-helpers/variables";
-@import "../../scss/1-helpers/mixins";
+@import '../../scss/1-helpers/variables';
+@import '../../scss/1-helpers/mixins';
 
 .profile {
   &__banner {
     height: 25vh;
     background: gray;
-    height: "25vh";
+    height: '25vh';
     background: gray;
   }
 
@@ -33,6 +33,12 @@
       }
     }
   }
+  &__followingBtn {
+    position: absolute;
+    right: 15px;
+    top: 10px;
+  }
+
   &__names {
     padding: 0 15px;
     margin-bottom: 5px;

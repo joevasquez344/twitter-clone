@@ -15,6 +15,7 @@ import {
   GET_FOLLOWING,
   FOLLOW,
   CLEAR_USER_DETAILS_FROM_STORAGE,
+  UNFOLLOW,
 } from './auth.types';
 
 const initialState = {
@@ -119,19 +120,31 @@ export default (state = initialState, action) => {
         userDetails: {...state.userDetails, followers: payload},
         error: null,
       };
-case GET_FOLLOWING:
-  return {
-    ...state,
-    isLoading: false,
-    userDetails: {...state.userDetails, following: payload}
-  }
+    case GET_FOLLOWING:
+      return {
+        ...state,
+        isLoading: false,
+        userDetails: {...state.userDetails, following: payload},
+      };
     case FOLLOW:
+      console.log('NEW NEW: ', payload);
+      return {
+     
+        ...state,
+        isLoading: false,
+        userDetails: {
+          ...state.userDetails,
+          followers: payload
+        },
+        error: null,
+      };
+    case UNFOLLOW:
       return {
         ...state,
         isLoading: false,
         userDetails: {
           ...state.userDetails,
-          followers: {...state.userDetails.followers, payload},
+          followers: payload
         },
         error: null,
       };

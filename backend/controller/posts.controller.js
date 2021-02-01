@@ -1,14 +1,17 @@
-const Post = require("../models/Post");
-const User = require("../models/User");
-const asyncHandler = require("express-async-handler");
+const Post = require('../models/Post');
+const User = require('../models/User');
+const asyncHandler = require('express-async-handler');
 
 // @desc    Get All Posts
 // @route   GET /api/posts
 // @access  Private
 const getPosts = asyncHandler(async (req, res) => {
-  const posts = await Post.find({}).populate('user').populate('replyTo').sort({date: -1});
+  const posts = await Post.find({})
+    .populate('user')
+    .populate('replyTo')
+    .sort({date: -1});
 
-  await User.populate(posts, {path: "replyTo.user"})
+  await User.populate(posts, {path: 'replyTo.user'});
 
   res.json(posts);
 });
@@ -17,7 +20,7 @@ const getPosts = asyncHandler(async (req, res) => {
 // @route   POST /api/posts
 // @access  Private
 const createPost = asyncHandler(async (req, res) => {
-  const { text, replyTo } = req.body;
+  const {text, replyTo} = req.body;
 
   const postData = {
     user: req.user.id,
@@ -31,7 +34,9 @@ const createPost = asyncHandler(async (req, res) => {
 
   const post = await Post.create(postData);
 
-  await User.findByIdAndUpdate(req.user.id, { $addToSet: { posts: post } });
+  const filter = {handle: req.user.handle};
+
+  await User.findOneAndUpdate(filter, {$addToSet: {posts: post}});
 
   res.json(post);
 });
@@ -51,7 +56,7 @@ const getPostById = asyncHandler(async (req, res) => {
 const deletePost = asyncHandler(async (req, res) => {
   const post = await Post.findByIdAndDelete(req.params.id);
 
-  res.json({ message: "Post Deleted", payload: post });
+  res.json({message: 'Post Deleted', payload: post});
 });
 
 // @desc    Like Post
@@ -59,25 +64,22 @@ const deletePost = asyncHandler(async (req, res) => {
 // @access  Private
 const likePost = asyncHandler(async (req, res) => {
   const post = await Post.findById(req.params.id);
-  console.log("Likes - Post: ", post);
+  console.log('Likes - Post: ', post);
 
   if (
     post.likes.filter((like) => like.user.toString() === req.user.id).length > 0
   ) {
-    return res.status(400).json({ message: "Post already liked" });
+    return res.status(400).json({message: 'Post already liked'});
   }
 
-  post.likes.unshift({ user: req.user.id });
+  post.likes.unshift({user: req.user.id});
 
-  const user = await User.findById(req.user.id);
-  console.log("Post Likes: ", post.likes);
-
-  user.likes = [...user.likes, post];
-
-  await user.save();
   await post.save();
 
-  res.json(post.likes);
+  res.json({
+    id: post._id,
+    likes: post.likes,
+  });
 });
 
 // @desc    Unlike Post
@@ -85,13 +87,12 @@ const likePost = asyncHandler(async (req, res) => {
 // @access  Private
 const unlikePost = asyncHandler(async (req, res) => {
   const post = await Post.findById(req.params.id);
-  const user = await User.findById(req.user.id);
 
   if (
     post.likes.filter((like) => like.user._id.toString() === req.user.id)
       .length === 0
   ) {
-    return res.status(400).json({ message: "Post has not yet been liked" });
+    return res.status(400).json({message: 'Post has not yet been liked'});
   }
 
   const removeIndex = post.likes
@@ -100,23 +101,23 @@ const unlikePost = asyncHandler(async (req, res) => {
 
   post.likes.splice(removeIndex, 1);
 
-  const removeIndexFromUsersLikes = user.likes.indexOf(req.params.id);
-
-  user.likes.splice(removeIndexFromUsersLikes, 1);
-
   await post.save();
-  await user.save();
 
-  res.json(post.likes);
+  res.json({
+    id: post._id,
+    likes: post.likes,
+  });
 });
 
 // @desc    Create Comment
 // @route   POST /api/posts/comment/:id
 // @access  Private
 const addComment = asyncHandler(async (req, res) => {
-  const { comment } = req.body;
+  const {comment} = req.body;
 
-  const user = await User.findById(req.user.id).select("-password");
+  const user = await User.findOne({handle: req.user.handle}).select(
+    '-password'
+  );
   const post = await Post.findById(req.params.id);
 
   const newComment = {
@@ -146,11 +147,11 @@ const removeComment = asyncHandler(async (req, res) => {
   );
 
   if (!comment) {
-    return res.status(404).json({ message: "Comment not found" });
+    return res.status(404).json({message: 'Comment not found'});
   }
 
   if (comment.user.toString() !== req.user.id) {
-    return res.status(401).json({ message: "User not authorized" });
+    return res.status(401).json({message: 'User not authorized'});
   }
 
   const removeIndex = post.comments
