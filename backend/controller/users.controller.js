@@ -90,9 +90,11 @@ const getUsers = asyncHandler(async (req, res) => {
 // @route   GET /api/users/:id
 // @access  Private
 const getUserById = asyncHandler(async (req, res) => {
-  const user = await User.findOne({handle: req.user.handle}).select('-password').populate({
-    path: 'likes',
-  });
+  const user = await User.findOne({handle: req.user.handle})
+    .select('-password')
+    .populate({
+      path: 'likes',
+    });
 
   const posts = await Post.find({user: req.params.id});
 
@@ -151,7 +153,7 @@ const updateProfile = asyncHandler(async (req, res) => {
 // @route   GET /api/users/:id/posts
 // @access  Private
 const getUsersPosts = asyncHandler(async (req, res) => {
-  const posts = await Post.find({user: req.params.handle});
+  const posts = await Post.find({handle: req.params.handle});
 
   res.json(posts);
 });
@@ -164,18 +166,19 @@ const getUsersLikedPosts = asyncHandler(async (req, res) => {
 
   // res.json(user.likes);
 
-  const posts = await Post.find({});
+  const posts = await Post.find({likedBy: req.user.id});
+
+  res.json(posts);
 });
 
 const followUser = asyncHandler(async (req, res) => {
   const profile = await User.findById(req.params.id);
   const user = await User.findOne({handle: req.user.handle});
- 
+
   // let userMatch = profile.followers.find((user) => user == user._id);
 
-
   let userMatch = profile.followers.includes(user._id);
-  console.log('MATCHHHH: ', userMatch)
+  console.log('MATCHHHH: ', userMatch);
 
   if (userMatch) {
     return res.json({
@@ -186,17 +189,15 @@ const followUser = asyncHandler(async (req, res) => {
   } else {
     profile.followers.push(user);
     user.following.push(profile);
-  
+
     console.log('Follow Profile: ', profile);
     console.log('Follow User: ', user);
-  
+
     await profile.save();
     await user.save();
-  
+
     res.status(200).json(profile.followers);
   }
-
- 
 });
 
 const unfollowUser = asyncHandler(async (req, res) => {
@@ -207,8 +208,7 @@ const unfollowUser = asyncHandler(async (req, res) => {
 
   let userMatch = profile.followers.includes(user._id);
 
-
-  console.log('MATCHHHH: ', userMatch)
+  console.log('MATCHHHH: ', userMatch);
 
   if (userMatch) {
     const profileFollowers = profile.followers.filter((u) => u != user._id);
@@ -217,7 +217,7 @@ const unfollowUser = asyncHandler(async (req, res) => {
     profile.followers = profileFollowers;
     user.following = userFollowing;
 
-    console.log('YOUR: ', profileFollowers)
+    console.log('YOUR: ', profileFollowers);
 
     await profile.save();
     await user.save();
@@ -233,13 +233,17 @@ const unfollowUser = asyncHandler(async (req, res) => {
 });
 
 const getUsersFollowers = asyncHandler(async (req, res) => {
-  const user = await User.findOne({handle: req.user.handle}).populate('followers');
+  const user = await User.findOne({handle: req.user.handle}).populate(
+    'followers'
+  );
 
   res.json(user.followers);
 });
 
 const getUsersFollowing = asyncHandler(async (req, res) => {
-  const user = await User.findOne({handle: req.user.handle}).populate('following');
+  const user = await User.findOne({handle: req.user.handle}).populate(
+    'following'
+  );
 
   res.json(user.following);
 });

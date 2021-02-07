@@ -37,7 +37,7 @@ const App = () => {
           name="Layout"
           component={Layout}
         /> */}
-        <AppRoute exact path="/" layout={Layout} component={Home} />
+        <AppRoute exact path="/home" layout={Layout} component={Home} />
         <AppRoute exact path="/:handle" layout={Layout} component={Profile} />
         <AppRoute exact path="/:handle/likes" layout={Layout} component={Profile} />
         <AppRoute

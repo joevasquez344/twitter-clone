@@ -21,6 +21,7 @@ const Layout = (props) => {
   const params = useParams();
 
   const dispatch = useDispatch();
+  const handle = useSelector(state => state.auth.user.handle);
 
   const handleLogout = () => {
     dispatch(logout());
@@ -34,7 +35,7 @@ const Layout = (props) => {
     <>
       This is the best
       <div className="layout">
-        <Sidebar />
+        <Sidebar handle={handle} />
         {/* <Center {...props} />
          */}
         <div style={styles.overflow}>{props.children}</div>

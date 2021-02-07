@@ -69,11 +69,11 @@ class Profile extends React.Component {
     });
 
     if (newActiveTab.label === 'Tweets') {
-      this.props.getUserDetails(this.props.userDetails);
       this.props.history.push(`/${this.props.userDetails.handle}`);
+      this.props.getUsersPosts(this.props.userDetails.handle);
     } else if (newActiveTab.label === 'Likes') {
       this.props.history.push(`/${this.props.userDetails.handle}/likes`);
-      this.props.getUserDetails(this.props.userDetails);
+      this.props.getUsersLikedPosts(this.props.userDetails.handle);
     }
 
     this.setState({...this.state, tabs: updatedTabs});
