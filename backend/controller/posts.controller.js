@@ -7,9 +7,15 @@ const asyncHandler = require('express-async-handler');
 // @access  Private
 const getPosts = asyncHandler(async (req, res) => {
   const posts = await Post.find({})
-    .populate('user')
-    .populate('replyTo')
+    .populate({
+      path: 'user',
+      populate: {
+        path: 'replyTo',
+      },
+    })
     .sort({date: -1});
+  // .populate('user')
+  // .populate('replyTo')
 
   await User.populate(posts, {path: 'replyTo.user'});
 
@@ -63,8 +69,8 @@ const deletePost = asyncHandler(async (req, res) => {
 // @route   PUT /api/posts/like/:id
 // @access  Private
 const likePost = asyncHandler(async (req, res) => {
-  const post = await Post.findById(req.params.id); 
-  const user = await User.findOne({handle: req.user.handle})
+  const post = await Post.findById(req.params.id);
+  const user = await User.findOne({handle: req.user.handle});
   console.log('Likes - Post: ', post);
 
   if (
@@ -76,8 +82,8 @@ const likePost = asyncHandler(async (req, res) => {
   post.likes.unshift({user: req.user.id});
   post.likedBy = req.user.id;
 
- console.log('LIKESSS: ', post);
-// user.likes.push(post)
+  console.log('LIKESSS: ', post);
+  // user.likes.push(post)
 
   await post.save();
 
@@ -105,7 +111,7 @@ const unlikePost = asyncHandler(async (req, res) => {
     .indexOf(req.user.id);
 
   post.likes.splice(removeIndex, 1);
-  post.likedBy = null
+  post.likedBy = null;
 
   await post.save();
 
@@ -119,7 +125,7 @@ const unlikePost = asyncHandler(async (req, res) => {
 // @route   POST /api/posts/comment/:id
 // @access  Private
 const addComment = asyncHandler(async (req, res) => {
-  const {comment} = req.body;
+  const {comment, replyTo} = req.body;
 
   const user = await User.findOne({handle: req.user.handle}).select(
     '-password'
@@ -131,6 +137,7 @@ const addComment = asyncHandler(async (req, res) => {
     handle: user.handle,
     avatar: user.avatar,
     user: req.user.id,
+    replyTo,
     likes: [],
     replies: [],
   };

@@ -90,7 +90,7 @@ const getUsers = asyncHandler(async (req, res) => {
 // @route   GET /api/users/:id
 // @access  Private
 const getUserById = asyncHandler(async (req, res) => {
-  const user = await User.findOne({handle: req.user.handle})
+  const user = await User.findOne({handle: req.params.handle})
     .select('-password')
     .populate({
       path: 'likes',
@@ -162,17 +162,13 @@ const getUsersPosts = asyncHandler(async (req, res) => {
 // @route   GET /api/users/:id/likes
 // @access  Private
 const getUsersLikedPosts = asyncHandler(async (req, res) => {
-  // const user = await User.findById(req.params.id).populate("likes");
-
-  // res.json(user.likes);
-
   const posts = await Post.find({likedBy: req.user.id});
 
   res.json(posts);
 });
 
 const followUser = asyncHandler(async (req, res) => {
-  const profile = await User.findById(req.params.id);
+  const profile = await User.findOne({handle: req.params.handle});
   const user = await User.findOne({handle: req.user.handle});
 
   // let userMatch = profile.followers.find((user) => user == user._id);
@@ -201,8 +197,10 @@ const followUser = asyncHandler(async (req, res) => {
 });
 
 const unfollowUser = asyncHandler(async (req, res) => {
-  const profile = await User.findById(req.params.id);
-  const user = await User.findOne(req.user.handle);
+  const profile = await User.fineOne({handle: req.params.handle});
+  const user = await User.findOne({handle: req.user.handle});
+
+  console.log('HELLOOOOOO')
 
   console.log('User: ', user);
 

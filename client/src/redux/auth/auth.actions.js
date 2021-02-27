@@ -270,6 +270,8 @@ export const unfollow = (handle) => async (dispatch, getState) => {
       },
     };
 
+    console.log('unfollowing')
+
     const {data} = await axios.put(`/api/users/${handle}/unfollow`, {}, config);
 
     const followers = data;

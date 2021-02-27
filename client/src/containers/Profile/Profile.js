@@ -135,14 +135,14 @@ class Profile extends React.Component {
   unfollowConfirmation = () => this.showUnfollowModal();
 
   handleFollow = () => {
-    this.props.follow(this.props.userDetails._id);
+    this.props.follow(this.props.userDetails.handle);
     this.setState({isFollowing: true});
   };
   handleUnfollow = (handle) => {
     const match = this.props.userDetails.followers.find(
       (u) => u === this.props.user._id
     );
-    console.log('match match: ', match);
+
     if (match) {
       this.props.unfollow(handle);
     }

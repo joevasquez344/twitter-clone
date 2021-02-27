@@ -19,9 +19,10 @@ const Landing = () => {
 
   useEffect(() => {
     if (user) {
-      history.push('/');
+      history.push('/home');
     }
-  }, [user]);
+    console.log('Mounted')
+  }, []);
 
   return (
     <div className="landing">

@@ -22,11 +22,12 @@ const App = () => {
   const dispatch = useDispatch();
   const {user, isLoading, error} = useSelector((state) => state.auth);
 
-  // useEffect(() => {
-  //   if (!user) {
-  //     history.push('/landing');
-  //   }
-  // }, [user]);
+  useEffect(() => {
+    console.log('App mounted');
+    if(user) {
+      history.push('/home')
+    }
+  }, []);
 
   return (
     <div className="app">
@@ -37,9 +38,27 @@ const App = () => {
           name="Layout"
           component={Layout}
         /> */}
+          <Route
+          exact
+          path="/landing"
+          name="Landing"
+          render={(props) => <Landing {...props} />}
+        />
+
+        <Route
+          exact
+          path="/login"
+          name="Login"
+          render={(props) => <Login {...props} />}
+        />
         <AppRoute exact path="/home" layout={Layout} component={Home} />
         <AppRoute exact path="/:handle" layout={Layout} component={Profile} />
-        <AppRoute exact path="/:handle/likes" layout={Layout} component={Profile} />
+        <AppRoute
+          exact
+          path="/:handle/likes"
+          layout={Layout}
+          component={Profile}
+        />
         <AppRoute
           exact
           path="/:handle/followers"
@@ -61,18 +80,7 @@ const App = () => {
 
         {/* <LayoutRoute exact path='/' layout={Layout} component={Home} /> */}
 
-        <Route
-          exact
-          path="/landing"
-          name="Landing"
-          render={(props) => <Landing {...props} />}
-        />
-        <Route
-          exact
-          path="/login"
-          name="Login"
-          render={(props) => <Login {...props} />}
-        />
+      
       </Switch>
     </div>
   );

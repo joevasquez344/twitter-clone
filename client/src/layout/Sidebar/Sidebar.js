@@ -177,6 +177,9 @@ const Sidebar = ({handle}) => {
               </li>
             );
           })}
+            <li>
+            <button onClick={showModal}>Tweet</button>
+          </li>
         </ul>
         <footer>
           <img src="" alt="" />
