@@ -8,11 +8,11 @@ import Reply from 'components/tweets/Reply';
 import {useDispatch, useSelector} from 'react-redux';
 import {getPosts} from '../../../redux/post/post.actions';
 
-const TweetFeed = ({posts, isLoading}) => {
+const TweetFeed = ({posts}) => {
   return (
     <div className="tweet-feed">
       {posts.map((post) => {
-        return <Tweet post={post} />;
+        return <Tweet key={post._id} post={post} />
       })}
     </div>
   );

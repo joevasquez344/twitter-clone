@@ -92,11 +92,11 @@ const getUsers = asyncHandler(async (req, res) => {
 const getUserById = asyncHandler(async (req, res) => {
   const user = await User.findOne({handle: req.params.handle})
     .select('-password')
-    .populate({
+    .populate([{
       path: 'likes',
-    });
+    }, {path: 'followers'}, {path: 'following'}]);
 
-  const posts = await Post.find({user: req.params.id});
+  const posts = await Post.find({handle: req.params.handle});
 
   console.log('Posts: ', posts);
 
@@ -162,7 +162,8 @@ const getUsersPosts = asyncHandler(async (req, res) => {
 // @route   GET /api/users/:id/likes
 // @access  Private
 const getUsersLikedPosts = asyncHandler(async (req, res) => {
-  const posts = await Post.find({likedBy: req.user.id});
+  console.log('LIKED POSTS: ', req.body.userId);
+  const posts = await Post.find({likedBy: req.params.userId});
 
   res.json(posts);
 });
@@ -173,15 +174,16 @@ const followUser = asyncHandler(async (req, res) => {
 
   // let userMatch = profile.followers.find((user) => user == user._id);
 
-  let userMatch = profile.followers.includes(user._id);
-  console.log('MATCHHHH: ', userMatch);
+  let isFollowing = profile.followers.includes(user._id);
 
-  if (userMatch) {
-    return res.json({
-      message: {
-        error: 'You already follow this user',
-      },
-    });
+  if (isFollowing) {
+    profile.followers = profile.followers.filter((u) => u != user._id);
+    user.following = user.following.filter((u) => u != profile._id);
+
+    await profile.save(); 
+    await user.save();
+ 
+    res.status(200).json(profile.followers);
   } else {
     profile.followers.push(user);
     user.following.push(profile);
@@ -197,30 +199,27 @@ const followUser = asyncHandler(async (req, res) => {
 });
 
 const unfollowUser = asyncHandler(async (req, res) => {
-  const profile = await User.fineOne({handle: req.params.handle});
-  const user = await User.findOne({handle: req.user.handle});
+  const targetedUser = await User.findOne({handle: req.params.handle}).populate('followers').select('-password');
+  const loggedInUser = await User.findOne({handle: req.user.handle}).populate('following').select('-password');
+ 
+console.log('logged in userrrr: ', targetedUser)
 
-  console.log('HELLOOOOOO')
+  // let isFollowingProfile = targetedUser.followers.includes('_id', loggedInUser._id);
+  let isFollowingProfile = targetedUser.followers.find(user => user._id === loggedInUser._id)
+  console.log('FOLLOWERS: ', isFollowingProfile)
 
-  console.log('User: ', user);
+ 
 
-  let userMatch = profile.followers.includes(user._id);
+  if (isFollowingProfile) {
+    targetedUser.followers = targetedUser.followers.filter((u) => u != loggedInUser._id);
+    loggedInUser.following = loggedInUser.following.filter((u) => u != targetedUser._id);
 
-  console.log('MATCHHHH: ', userMatch);
+   
 
-  if (userMatch) {
-    const profileFollowers = profile.followers.filter((u) => u != user._id);
-    const userFollowing = user.following.filter((u) => u != profile._id);
-
-    profile.followers = profileFollowers;
-    user.following = userFollowing;
-
-    console.log('YOUR: ', profileFollowers);
-
-    await profile.save();
-    await user.save();
-
-    res.status(200).json(profile.followers);
+    await targetedUser.save(); 
+    await loggedInUser.save();
+ 
+    res.status(200).json(targetedUser.followers);
   } else {
     return res.json({
       message: {

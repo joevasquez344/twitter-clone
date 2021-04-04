@@ -1,0 +1,15 @@
+@import "../../../scss/1-helpers/variables";
+@import "../../../scss/1-helpers/mixins";
+
+.likedByModal {
+    position: absolute;
+  z-index: 5;
+  top: 50px;
+  border-radius: 8px;
+  width: 30vw;
+  background: $twitter-navy;
+  box-shadow: 0px 0px 100px $twitter-blue;
+  left: 35%;
+  overflow: scroll;
+  height: 70vh;
+}

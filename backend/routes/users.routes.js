@@ -25,7 +25,7 @@ router.post("/login", login);
 router.route("/profile").put(protect, updateProfile);
 
 router.route("/:handle/posts").get(protect, getUsersPosts);
-router.route("/:handle/likes").get(protect, getUsersLikedPosts);
+router.route("/:handle/:userId/likes").get(protect, getUsersLikedPosts);
 
 router.route('/:handle/follow').post(protect, followUser)
 router.route('/:handle/unfollow').put(protect, unfollowUser)

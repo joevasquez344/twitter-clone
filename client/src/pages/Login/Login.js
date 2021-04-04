@@ -35,6 +35,7 @@ const Login = () => {
     if (user) {
       history.push('/');
     }
+
   }, [user]);
 
   return (

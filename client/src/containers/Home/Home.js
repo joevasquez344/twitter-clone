@@ -14,6 +14,10 @@ const Home = () => {
   const {posts, isLoading} = useSelector((state) => state.post);
   useEffect(() => {
     dispatch(getPosts());
+
+  
+
+    // console.log('TADN: ', hello)
   }, []);
   return (
     <div className="home">

@@ -1,4 +1,4 @@
-@import "../../../scss/1-helpers/variables";
+@import '../../../scss/1-helpers/variables';
 
 .tweetModal {
   position: absolute;
@@ -16,7 +16,7 @@
     color: white;
 
     i {
-        cursor: pointer;
+      cursor: pointer;
     }
   }
 
@@ -61,17 +61,17 @@
         justify-content: space-between;
 
         .tweetModal__iconsWrap {
-            display: flex;
-            align-items: center;
+          display: flex;
+          align-items: center;
           span {
             color: $twitter-blue;
             margin-right: 15px;
             font-size: 10px;
             padding: 5px;
-          display:flex;
-          justify-content: center;
-        align-items: center;
-    
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
             cursor: pointer;
             border-radius: 50%;
             transition: 0.1s linear all;

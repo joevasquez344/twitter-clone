@@ -39,6 +39,8 @@ export const register = (handle, password, birthday) => async (dispatch) => {
     });
 
     localStorage.setItem('user', JSON.stringify(data));
+
+    getUserDetails(data.handle)
   } else {
     dispatch({
       type: REGISTER_FAILED,
@@ -64,10 +66,17 @@ export const login = (handle, password) => async (dispatch) => {
 
     dispatch({
       type: LOGIN_SUCCESS,
-      payload: user,
+      payload: data,
     });
 
+ 
+  
+
     localStorage.setItem('user', JSON.stringify(user));
+
+    console.log('AUTH HANDLE: ', user.handle)
+
+    getUserDetails(user.handle);
   } catch (error) {
     dispatch({
       type: LOGIN_FAILED,
@@ -117,7 +126,6 @@ export const logout = () => (dispatch) => {
 };
 
 export const getUserDetails = (handle) => async (dispatch, getState) => {
-  console.log('User handle from actions: ', handle);
   try {
     dispatch({
       type: REQUEST_SENT,
@@ -133,8 +141,9 @@ export const getUserDetails = (handle) => async (dispatch, getState) => {
       },
     };
 
+    console.log('AUTH HANDLE: ', handle)
+
     const {data} = await axios.get(`/api/users/${handle}`, config);
-    console.log('User Details from action', data);
 
     dispatch({
       type: USER_DETAILS_SUCCESS,
@@ -142,7 +151,6 @@ export const getUserDetails = (handle) => async (dispatch, getState) => {
     });
 
     localStorage.setItem('userDetails', JSON.stringify(data));
-    console.log('STAAAATE: ', getState().auth.userDetails);
     return getState().auth.userDetails;
   } catch (error) {
     dispatch({
@@ -179,7 +187,10 @@ export const getUsersPosts = (handle) => async (dispatch, getState) => {
   }
 };
 
-export const getUsersLikedPosts = (handle) => async (dispatch, getState) => {
+export const getUsersLikedPosts = (handle, userId) => async (
+  dispatch,
+  getState
+) => {
   try {
     dispatch({
       type: REQUEST_SENT,
@@ -193,7 +204,7 @@ export const getUsersLikedPosts = (handle) => async (dispatch, getState) => {
       },
     };
 
-    const {data} = await axios.get(`/api/users/${handle}/likes`, config);
+    const {data} = await axios.get(`/api/users/${handle}/${userId}/likes`, config);
 
     dispatch({
       type: GET_USERS_LIKED_POSTS,
@@ -219,15 +230,9 @@ export const getFollowers = (handle) => async (dispatch, getState) => {
 
     const {data} = await axios.get(`/api/users/${handle}/followers`, config);
 
-    console.log('DATAAA: ', data);
-
-    const followers = data;
-
-    console.log('Followers: ', followers);
-
     dispatch({
       type: GET_FOLLOWERS,
-      payload: followers,
+      payload: data,
     });
   } catch (error) {
     console.log(error);
@@ -247,12 +252,11 @@ export const follow = (handle) => async (dispatch, getState) => {
     };
 
     const {data} = await axios.post(`/api/users/${handle}/follow`, {}, config);
-
-    const followers = data;
+ 
 
     dispatch({
       type: FOLLOW,
-      payload: followers
+      payload: data,
     });
   } catch (error) {
     console.error(error.message);
@@ -270,15 +274,14 @@ export const unfollow = (handle) => async (dispatch, getState) => {
       },
     };
 
-    console.log('unfollowing')
+    console.log('unfollowing');
 
     const {data} = await axios.put(`/api/users/${handle}/unfollow`, {}, config);
 
-    const followers = data;
 
     dispatch({
       type: UNFOLLOW,
-      payload: followers,
+      payload: data,
     });
   } catch (error) {
     console.error(error.message);

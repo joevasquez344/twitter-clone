@@ -25,19 +25,22 @@ export const getPosts = () => async (dispatch, getState) => {
       type: GET_POSTS,
       payload: data,
     });
+
+    localStorage.setItem('posts', JSON.stringify(data));
+
   } catch (error) {
     console.log(error);
   }
 };
 
-export const createPost = (text) => async (dispatch, getState) => {
+export const createPost = (replyTo, text) => async (dispatch, getState) => {
   try {
     dispatch({
       type: REQUEST_SENT,
     });
     const token = getState().auth.user.token;
 
-    const body = {text};
+    const body = {replyTo, text};
 
     const config = {
       headers: {
@@ -52,6 +55,9 @@ export const createPost = (text) => async (dispatch, getState) => {
       type: CREATE_POST,
       payload: res.data,
     });
+
+
+
   } catch (error) {
     console.log(error);
   }
@@ -70,7 +76,7 @@ export const likePost = (id) => async (dispatch, getState) => {
     console.log(config);
 
     const {data} = await axios.put(`/api/posts/like/${id}`, {}, config);
-    const likes = data;
+    const likes = data.likes;
     console.log('Likes: ', likes);
 
     // Getting back the post that was liked but the posts array is not being updated with the liked post in the
@@ -89,6 +95,9 @@ export const likePost = (id) => async (dispatch, getState) => {
       type: UPDATE_LIKES,
       payload: posts,
     });
+
+    localStorage.setItem('posts', JSON.stringify(posts));
+
   } catch (error) {
     console.log(error.message);
   }
@@ -106,11 +115,8 @@ export const unlikePost = (id) => async (dispatch, getState) => {
       },
     };
 
-    console.log(config);
-
     const {data} = await axios.post(`/api/posts/unlike/${id}`, {}, config);
-    const likes = data;
-    console.log('Likes: ', likes);
+    const likes = data.likes;
 
     // Getting back the post that was liked but the posts array is not being updated with the liked post in the
     // map function below
@@ -128,6 +134,8 @@ export const unlikePost = (id) => async (dispatch, getState) => {
       type: UPDATE_LIKES,
       payload: posts,
     });
+
+    localStorage.setItem('posts', JSON.stringify(posts));
   } catch (error) {
     console.log(error.message);
   }
@@ -149,12 +157,13 @@ export const getPostById = (id) => async (dispatch, getState) => {
 
     const {data} = await axios.get(`/api/posts/${id}`, config);
 
-    console.log('Data:', data)
-
     dispatch({
       type: GET_POST_BY_ID,
       payload: data
     })
+
+    localStorage.setItem('postDetails', JSON.stringify(data));
+
   } catch (error) {
     console.error(error.message);
   }

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import "./Landing.scss";
 import { useHistory } from "react-router-dom";
 
+import {checkForUserInStorage} from '../../helpers/auth'
+
 import {useSelector} from 'react-redux'
 
 import SignUpModal from "components/modals/SignUpModal/SignUpModal";
@@ -18,12 +20,13 @@ const Landing = () => {
   const showModal = () => setIsModalPresent(true);
 
   useEffect(() => {
+    checkForUserInStorage();
     if (user) {
       history.push('/home');
     }
     console.log('Mounted')
   }, []);
-
+ 
   return (
     <div className="landing">
       <div className="landing__left">

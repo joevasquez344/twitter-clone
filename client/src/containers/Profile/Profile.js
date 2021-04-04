@@ -1,8 +1,10 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, Suspense} from 'react';
 import './Profile.scss';
+import axios from 'axios';
 
-import {useHistory} from 'react-router-dom';
 import {connect} from 'react-redux';
+
+import {checkForUserInStorage} from '../../helpers/auth';
 
 import Spinner from 'react-bootstrap/Spinner';
 import TweetFeed from 'components/tweets/TweetFeed/TweetFeed';
@@ -14,7 +16,6 @@ import {
   getUsersPosts,
   getUsersLikedPosts,
   getFollowers,
-  clearUserDetailsFromStorage,
   follow,
   unfollow,
 } from 'redux/auth/auth.actions';
@@ -51,29 +52,35 @@ class Profile extends React.Component {
   };
 
   handleTabClick = (id) => {
-    const currentActiveTab = this.state.tabs.find(
-      (tab) => tab.isActive === true
-    );
+    const {
+      userDetails: {_id, handle},
+      getUsersPosts,
+      getUsersLikedPosts,
+      history,
+    } = this.props;
+    const {tabs} = this.state;
 
-    let newActiveTab = null;
+    const prevActiveTab = this.state.tabs.find((tab) => tab.isActive);
 
-    const updatedTabs = this.state.tabs.map((tab) => {
+    let nextActiveTab = null;
+
+    const updatedTabs = tabs.map((tab) => {
       if (tab.id === id) {
         tab.isActive = true;
-        newActiveTab = tab;
-      } else if (currentActiveTab && tab.id === currentActiveTab.id) {
+        nextActiveTab = tab;
+      } else if (prevActiveTab && tab.id === prevActiveTab.id) {
         tab.isActive = false;
       }
 
       return tab;
     });
 
-    if (newActiveTab.label === 'Tweets') {
-      this.props.history.push(`/${this.props.userDetails.handle}`);
-      this.props.getUsersPosts(this.props.userDetails.handle);
-    } else if (newActiveTab.label === 'Likes') {
-      this.props.history.push(`/${this.props.userDetails.handle}/likes`);
-      this.props.getUsersLikedPosts(this.props.userDetails.handle);
+    if (nextActiveTab.label === 'Tweets') {
+      history.push(`/${handle}`);
+      getUsersPosts(handle);
+    } else if (nextActiveTab.label === 'Likes') {
+      history.push(`/${handle}/likes`);
+      getUsersLikedPosts(handle, _id);
     }
 
     this.setState({...this.state, tabs: updatedTabs});
@@ -171,55 +178,66 @@ class Profile extends React.Component {
   };
 
   async componentDidMount() {
-    const userDetails = await this.props.getUserDetails(
-      this.props.match.params.handle
-    );
+    console.log('DID MOUNT');
 
-    if (this.props.history.location.pathname.split('/')[2] === undefined) {
-      this.updateTabs('Tweets');
-    } else if (this.props.history.location.pathname.split('/')[2] === 'likes') {
-      this.updateTabs('Likes');
-    } else if (
-      this.props.history.location.pathname.split('/')[2] === 'with_replies'
-    ) {
-      // GET USERS TWEETS WITH REPLIES
-    } else if (this.props.history.location.pathname.split('/')[2] === 'media') {
-      // GET USERS MEDIA TWEETS
-    }
+    const {
+      history,
+      user,
+      getUserDetails,
+      match: {
+        params: {handle},
+      },
+    } = this.props;
 
-    const following = userDetails.followers.find(
-      (u) => u === this.props.user._id
-    );
+    const userDetails = await getUserDetails(handle);
 
-    if (following) return this.setState({isFollowing: true});
-    else return this.setState({isFollowing: false});
+    const checkParams = () => {
+      const parameter =
+        history.location.pathname.split('/')[1] ||
+        history.location.pathname.split('/')[2];
+
+      return parameter === userDetails.handle
+        ? this.updateTabs('Tweets')
+        : parameter === 'likes'
+        ? this.updateTabs('Likes')
+        : parameter === 'with_replies'
+        ? null
+        : parameter === 'media'
+        ? null
+        : this.updateTabs('Tweets');
+    };
+
+    checkParams();
+
+    const following = userDetails.followers.find((u) => u === user._id);
+
+    following
+      ? this.setState({isFollowing: true})
+      : this.setState({isFollowing: false});
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    console.log('Next State: ', nextState);
     if (this.state.tabs !== nextState.tabs) {
       return false;
     } else {
       return true;
     }
-    // const currentActiveTab = this.state.tabs.find(
-    //   (tab) => tab.isActive === true
-    // );
-    // this.state.tabs.forEach(tab => {
-    //   if(currentActiveTab.id === tab.id) {
-
-    //   }
-    // })
   }
 
+  // componentWillMount() {
+  //   const handle = this.props.match.params.handle;
+  //   console.log('WILL MOUNT HANDLE: ', handle)
+  //   const result = checkForUserInStorage();
+  //   if (result === null) this.props.getUserDetails(handle);
+  // }
+
   render() {
-    console.log('Prop', this.props);
+    const {isFollowing, tabs} = this.state;
+
     return (
       <>
         {this.props.isLoading ? (
-          <div className="spinner">
-            <Spinner animation="border" variant="primary" />
-          </div>
+          <Spinner />
         ) : (
           <div className="profile">
             <Header />
@@ -240,7 +258,7 @@ class Profile extends React.Component {
                   >
                     Edit Profile
                   </button>
-                ) : this.state.isFollowing ? (
+                ) : isFollowing ? (
                   <>
                     <div className="profile__followingBtn">
                       {' '}
@@ -301,11 +319,11 @@ class Profile extends React.Component {
             </div>
 
             <Tabs
-              tabs={this.state.tabs}
+              tabs={tabs}
               handleTabClick={this.handleTabClick}
               userDetails={this.props.userDetails}
             />
-            {this.renderTabContent()}
+            {this.props.isLoading ? <Spinner /> : this.renderTabContent()}
           </div>
         )}
       </>
@@ -327,5 +345,4 @@ export default connect(mapStateToProps, {
   getFollowers,
   follow,
   unfollow,
-  clearUserDetailsFromStorage,
 })(Profile);

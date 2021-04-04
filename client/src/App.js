@@ -1,13 +1,11 @@
 import React, {useEffect} from 'react';
 import {Route, Switch, useHistory} from 'react-router-dom';
+import {useSelector, useDispatch} from 'react-redux';
 import './App.scss';
 
-import PrivateRoute from 'components/PrivateRoute';
-import AppRoute from 'components/routes/AppRoute';
-import LayoutRoute from 'components/routes/LayoutRoute';
+import {getUserDetails} from 'redux/auth/auth.actions';
 
-import {useDispatch, useSelector} from 'react-redux';
-// import { setUser } from "./redux/auth/auth.actions";
+import AppRoute from 'components/routes/AppRoute';
 
 import Landing from './pages/Landing/Landing';
 import Login from './pages/Login/Login';
@@ -19,38 +17,31 @@ import PostDetails from 'containers/PostDetails/PostDetails';
 
 const App = () => {
   const history = useHistory();
-  const dispatch = useDispatch();
-  const {user, isLoading, error} = useSelector((state) => state.auth);
+  const user = useSelector((state) => state.auth.user);
 
-  useEffect(() => {
-    console.log('App mounted');
-    if(user) {
-      history.push('/home')
-    }
-  }, []);
-
+  useEffect(() => {}, []);
   return (
     <div className="app">
       <Switch>
-        {/* <PrivateRoute
+        <Route
           exact
           path="/"
-          name="Layout"
-          component={Layout}
-        /> */}
-          <Route
+          name="Default Auth"
+          render={() => history.push('/home')}
+        />
+        <Route
           exact
           path="/landing"
           name="Landing"
           render={(props) => <Landing {...props} />}
         />
-
         <Route
           exact
           path="/login"
           name="Login"
           render={(props) => <Login {...props} />}
         />
+        <AppRoute exact path="/" layout={Layout} component={Home} />
         <AppRoute exact path="/home" layout={Layout} component={Home} />
         <AppRoute exact path="/:handle" layout={Layout} component={Profile} />
         <AppRoute
@@ -58,6 +49,13 @@ const App = () => {
           path="/:handle/likes"
           layout={Layout}
           component={Profile}
+          fetchData={getUserDetails}
+        />
+        <AppRoute
+          exact
+          path="/:handle/status/:postId/likes"
+          layout={Layout}
+          component={PostDetails}
         />
         <AppRoute
           exact
@@ -73,14 +71,17 @@ const App = () => {
         />
         <AppRoute
           exact
-          path="/user/:id/post/:postId"
+          path="/:handle/status/:postId"
           layout={Layout}
           component={PostDetails}
         />
-
-        {/* <LayoutRoute exact path='/' layout={Layout} component={Home} /> */}
-
-      
+        {/* <AppRoute
+          exact
+          path="/compose/tweet"
+          layout={Layout}
+          component={PostDetails}
+        /> */}
+        
       </Switch>
     </div>
   );

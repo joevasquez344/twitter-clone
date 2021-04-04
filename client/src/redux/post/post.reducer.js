@@ -29,6 +29,7 @@ export default (state = initialState, action) => {
         isLoading: false,
       };
     case CREATE_POST:
+      // const postsFromStorage = localStorage.getItem('posts') ? JSON.parse(localStorage.getItem('posts')) : [];
       return {
         ...state,
         posts: [payload, ...state.posts],
@@ -37,7 +38,8 @@ export default (state = initialState, action) => {
     case UPDATE_LIKES:
       return {
         ...state,
-        posts: state.posts.map(post => post._id === payload.id ? { ...post, likes: payload.likes} : post),
+        // posts: state.posts.map(post => post._id === payload.id ? { ...post, likes: payload.likes} : post),
+        posts: payload,
         isLoading: false,
       };
     case GET_POST_BY_ID:

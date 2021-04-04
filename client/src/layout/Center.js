@@ -1,4 +1,5 @@
 import React from 'react';
+import './Center.scss';
 import routes from '../routes';
 import {
   Switch,
@@ -21,7 +22,7 @@ class Center extends React.Component {
 
   render() {
     return (
-      <div style={styles.overflow}>
+      <div className='layout__center' style={styles.overflow}>
         <Switch>
           {routes.map((route, idx) => {
             return (

@@ -127,9 +127,7 @@ export default (state = initialState, action) => {
         userDetails: {...state.userDetails, following: payload},
       };
     case FOLLOW:
-      console.log('NEW NEW: ', payload);
       return {
-     
         ...state,
         isLoading: false,
         userDetails: {

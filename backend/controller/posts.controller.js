@@ -51,7 +51,13 @@ const createPost = asyncHandler(async (req, res) => {
 // @route   GET /api/posts/:id
 // @access  Private
 const getPostById = asyncHandler(async (req, res) => {
-  const post = await Post.findById(req.params.id).populate('replyTo');
+  let post = await Post.findById(req.params.id).populate('replyTo');
+  const comments = await Post.find({replyTo: post._id}).populate('replyTo');
+
+  post = {
+    ...post.toObject(),
+    comments,
+  };
 
   res.json(post);
 });
@@ -82,10 +88,13 @@ const likePost = asyncHandler(async (req, res) => {
   post.likes.unshift({user: req.user.id});
   post.likedBy = req.user.id;
 
+  user.likes = [...user.likes, post];
+
   console.log('LIKESSS: ', post);
   // user.likes.push(post)
 
   await post.save();
+  await user.save();
 
   res.json({
     id: post._id,
@@ -98,6 +107,7 @@ const likePost = asyncHandler(async (req, res) => {
 // @access  Private
 const unlikePost = asyncHandler(async (req, res) => {
   const post = await Post.findById(req.params.id);
+  const user = await User.findOne({handle: req.user.handle});
 
   if (
     post.likes.filter((like) => like.user._id.toString() === req.user.id)
@@ -113,7 +123,10 @@ const unlikePost = asyncHandler(async (req, res) => {
   post.likes.splice(removeIndex, 1);
   post.likedBy = null;
 
+  user.likes = user.likes.filter((p) => p._id !== post._id);
+
   await post.save();
+  await user.save();
 
   res.json({
     id: post._id,
@@ -178,7 +191,9 @@ const removeComment = asyncHandler(async (req, res) => {
   res.json(post.comments);
 });
 
-const getComments = asyncHandler(async (req, res) => {});
+const getComments = asyncHandler(async (req, res) => {
+  const posts = await Post.find({replyTo: req.params.id});
+});
 
 module.exports = {
   getPosts,

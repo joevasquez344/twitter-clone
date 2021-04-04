@@ -1,0 +1,167 @@
+@import '../../../scss/1-helpers/variables';
+@import '../../../scss/1-helpers/mixins';
+* {
+//   border: 1px solid dodgerblue;
+}
+.commentModal {
+  position: absolute;
+  z-index: 5;
+  top: 50px;
+  border-radius: 8px;
+  width: 30vw;
+  background: $twitter-navy;
+  box-shadow: 0px 0px 100px $twitter-blue;
+  left: 35%;
+
+  header {
+    padding: 10px 20px;
+    border-bottom: 1px solid $twitter-gray-blue;
+    color: white;
+
+    i {
+      cursor: pointer;
+    }
+  }
+
+  &__body {
+    background: $twitter-navy;
+    height: 100%;
+    display: flex;
+    padding: 10px 15px;
+
+    &Image {
+    //   width: 10%;
+      position: relative;
+      margin-right: auto;
+    //   border: 1px solid red;
+      height: auto;
+      img {
+        // height: 100%;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        background-color: $twitter-gray-blue;
+        margin-left: auto;
+      }
+    }
+
+    &Right {
+      width: 90%;
+
+
+      &Top {
+        display: flex;
+      }
+
+      &Bottom {
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        button {
+          background: $twitter-blue;
+          border-radius: 500px;
+          color: white;
+          font-weight: bold;
+          border: none;
+          padding: 7px 15px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+      }
+    }
+  }
+
+  &__displayName {
+    color: white;
+    font-weight: bold;
+    margin-right: 8px;
+  }
+
+  &__username {
+    color: $twitter-gray-blue;
+    font-weight: 0.8rem;
+    margin-right: 5px;
+  }
+  &__timeFromPost {
+    color: $twitter-gray-blue;
+    font-weight: 0.8rem;
+  }
+  &__content {
+    color: white;
+  }
+  &__replyWrap {
+    span:first-child {
+      color: $twitter-gray-blue;
+      font-size: 0.9rem;
+    }
+  }
+  &__replyTo {
+    color: $twitter-blue;
+  }
+
+  &__replier {
+    display: flex;
+    padding: 0 15px;
+    img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background-color: $twitter-gray-blue;
+      margin-right: 10px;
+      border: none;
+    }
+    textarea {
+      background: transparent;
+      width: 100%;
+      border: none;
+      font-size: 1.1rem;
+      color: white;
+      padding-top: 15px;
+
+      &::placeholder {
+        color: $twitter-gray-blue;
+        font-size: 1.1rem;
+      }
+    }
+  }
+
+  &__footer {
+    display: flex;
+    justify-content: space-between;
+    margin-left: auto;
+    align-items: center;
+    padding: 10px 20px;
+    width: 90%;
+    .commentModal__iconsWrap {
+      display: flex;
+      align-items: center;
+      span {
+        color: $twitter-blue;
+        margin-right: 15px;
+        font-size: 10px;
+        padding: 5px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        cursor: pointer;
+        border-radius: 50%;
+        transition: 0.1s linear all;
+
+        &:nth-child(1) {
+          padding: 7px;
+        }
+        &:hover {
+          background-color: rgba($color: $twitter-blue, $alpha: 0.2);
+        }
+      }
+    }
+    button {
+      @include blue_btn;
+      padding: 7px 15px;
+    }
+  }
+}

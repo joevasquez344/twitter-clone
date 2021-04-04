@@ -1,3 +1,102 @@
+// .postDetails {
+//     header {
+//         display: flex;
+//         align-items: center;
+//         justify-content: space-between;
+//         color: white;
+//     }
+// }
+
+@import '../../scss/1-helpers/variables';
+@import '../../scss/1-helpers/mixins';
+
 .postDetails {
-    
+  padding: 10px 20px 0 20px;
+  border-bottom: 1px solid #38444d;
+  background: $twitter-navy;
+
+  &__profileImage {
+    @include profileImageMedium;
+    margin-right: 10px;
+  }
+
+  &__body {
+    width: 100%;
+    display: flex;
+  }
+
+  &__displayName {
+    margin-right: 5px;
+    color: white;
+  }
+
+  &__handle {
+    color: gray;
+    color: white;
+  }
+
+  &__graphic {
+    width: 100%;
+    display: inline-block;
+    height: 34vh;
+    margin-bottom: 30px;
+  }
+
+  &__text {
+    color: white;
+    font-size: 1.4rem;
+  }
+
+  &__footer {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__interactions {
+    display: flex;
+    width: 100%;
+    border-top: 1px solid #38444d;
+    border-bottom: 1px solid #38444d;
+    padding: 15px 0;
+  }
+
+  &__interactionsItem {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 30px;
+
+    span {
+      color: gray;
+      &:nth-child(1) {
+        margin-right: 5px;
+        color: white;
+        font-weight: bold;
+      }
+    }
+  }
+
+  &__icons {
+    padding: 15px 60px;
+    display: flex;
+    justify-content: space-between;
+
+    i {
+      color: gray;
+      margin-right: 10px;
+      font-size: 1.3rem;
+    }
+
+    span {
+      color: gray;
+    }
+  }
+
+  &__icon {
+    cursor: pointer;
+  }
+  
+  &__comments {
+  }
 }
