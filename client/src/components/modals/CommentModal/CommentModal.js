@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import './CommentModal.scss';
 import {createPost} from '../../../redux/post/post.actions';
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
 
 import GifIcon from '@material-ui/icons/Gif';
 import ConnectLine from 'components/ConnectLine';
@@ -11,13 +11,10 @@ const CommentModal = ({post, hideModal}) => {
 
   const dispatch = useDispatch();
 
-  const handleChange = (e) => {
-    setText(e.target.value);
-  };
+  const handleChange = (e) => setText(e.target.value);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Text: ', text);
     dispatch(createPost(post._id, text));
     hideModal();
   };

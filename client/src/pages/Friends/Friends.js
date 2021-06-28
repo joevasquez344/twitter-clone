@@ -3,20 +3,25 @@ import './Friends.scss';
 
 import {useSelector, useDispatch} from 'react-redux';
 import {
-  getFollowers,
-  getFollowing,
   unfollow,
   follow,
   getUserDetails,
 } from '../../redux/auth/auth.actions';
 
+import useModal from 'hooks/useModal';
 import {useHistory} from 'react-router-dom';
 
-import Header from 'layout/Header';
 import FollowingButton from 'components/buttons/FollowingButton/FollowingButton';
 import UnfollowModal from 'components/modals/UnfollowModal/UnfollowModal';
 
-const Friends = ({match, location}) => {
+const Friends = () => {
+  const dispatch = useDispatch();
+  const history = useHistory();
+  const {isOpen, openModal, closeModal} = useModal();
+
+  const {isLoading, userDetails, user} = useSelector((state) => state.auth);
+  const [isModalPresent, setIsModalPresent] = useState(false);
+  const [isFollowing, setFollowing] = useState(true);
   const [tabs, setTabs] = useState([
     {
       id: 1,
@@ -30,26 +35,17 @@ const Friends = ({match, location}) => {
     },
   ]);
 
-  const [isModalPresent, setIsModalPresent] = useState(false);
-  const [isFollowing, setIsFollowing] = useState(true);
-
-  const dispatch = useDispatch();
-
-  const history = useHistory();
-
-  // const followers = useSelector((state) => state.auth.userDetails.followers);
-  // const following = useSelector((state) => state.auth.userDetails.following);
-  const {isLoading, userDetails, user} = useSelector((state) => state.auth);
-
   const showModal = () => setIsModalPresent(true);
+
   const hideModal = () => {
     setIsModalPresent(false);
   };
 
-  const unfollowConfirmation = () => showModal();
+  // const unfollowConfirmation = () => showModal();
+  const unfollowConfirmation = () => openModal();
 
   const setFollowButton = () => {
-    setIsFollowing(false);
+    setFollowing(false);
   };
 
   const handleUnfollow = (handle) => {
@@ -59,7 +55,7 @@ const Friends = ({match, location}) => {
 
   const handleFollow = (handle) => {
     dispatch(follow(handle));
-    setIsFollowing(true);
+    setFollowing(true);
   };
 
   const handleTabClick = (id) => {
@@ -82,24 +78,9 @@ const Friends = ({match, location}) => {
 
     history.push(`/${userDetails.handle}/${newActiveTab.label.toLowerCase()}`);
 
-    // if (newActiveTab.label === 'Followers') {
-    //   // dispatch(getFollowers(match.params.handle));
-    //   dispatch(getUserDetails(userDetails.handle));
-    // } else if (newActiveTab.label === 'Following') {
-    //   // dispatch(getFollowing(handle));
-    //   dispatch(getUserDetails(userDetails.handle));
-    // }
-
     setTabs(updatedTabs);
   };
 
-  const renderNotFound = () => {
-    return <p style={{color: 'white'}}>Something went wrong</p>;
-  };
-
-  // PROBLEM:
-  // When I try to access this route/component from a URL search, I don't have access to the userDetails object
-  //
   useEffect(() => {
     const handleParam = history.location.pathname.split('/')[1];
     const followParam = history.location.pathname.split('/')[2];
@@ -171,12 +152,13 @@ const Friends = ({match, location}) => {
                       <p>{follower.bio}</p>
                     </div>
                   </li>{' '}
-                  {isModalPresent ? (
+                  {isOpen ? (
                     <UnfollowModal
                       setFollowButton={setFollowButton}
                       handleUnfollow={handleUnfollow}
                       user={user}
-                      hideModal={hideModal}
+                      // hideModal={hideModal}
+                      hideModal={closeModal}
                     />
                   ) : null}
                 </>
@@ -214,12 +196,13 @@ const Friends = ({match, location}) => {
                       <p>{follow.bio}</p>
                     </div>
                   </li>
-                  {isModalPresent ? (
+                  {isOpen ? (
                     <UnfollowModal
                       setFollowButton={setFollowButton}
                       handleUnfollow={handleUnfollow}
                       user={user}
-                      hideModal={hideModal}
+                      // hideModal={hideModal}
+                      hideModal={closeModal}
                     />
                   ) : null}
                 </>

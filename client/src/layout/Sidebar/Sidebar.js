@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useMemo} from 'react';
 import './Sidebar.scss';
 import {useHistory} from 'react-router-dom';
 
@@ -43,9 +43,6 @@ const Sidebar = ({handle}) => {
   ]);
 
   const {isLoading} = useSelector((state) => state.post);
-  // const {handle, _id} = useSelector((state) => state.auth.user);
-
-  console.log('Handle: ', handle);
 
   const dispatch = useDispatch();
 
@@ -65,16 +62,16 @@ const Sidebar = ({handle}) => {
   };
 
   const handleTabClick = (tab) => {
-    const currentActiveTab = tabs.find((tab) => tab.isActive === true);
+    const prevActiveTab = tabs.find((tab) => tab.isActive === true);
 
-    // let newActiveTab = null;
+    let nextActiveTab = null;
 
     const updatedTabs = tabs.map((t) => {
       if (t.id === tab.id) {
         t.isActive = true;
         history.push(tab.path);
-        // newActiveTab = tab;
-      } else if (currentActiveTab && t.id === currentActiveTab.id) {
+        nextActiveTab = tab;
+      } else if (prevActiveTab && t.id === prevActiveTab.id) {
         t.isActive = false;
       }
 
@@ -94,6 +91,8 @@ const Sidebar = ({handle}) => {
     // this.setState({...this.state, tabs: updatedTabs});
   };
 
+  console.log('Change')
+
   useEffect(() => {
     const activeTab = tabs.find((tab) => tab.isActive === true);
 
@@ -103,17 +102,18 @@ const Sidebar = ({handle}) => {
     const updatedTabs = tabs.map((tab) => {
       if (tab.path === path || tab.path === extendedPath) {
         tab.isActive = true;
-      } else if (activeTab && tab.id === activeTab.id) {
-        tab.isActive = false;
       }
+      // else if (activeTab && tab.id === activeTab.id) {
+      //   tab.isActive = false;
+      // }
 
       return tab;
     });
 
+    console.log('Render')
+
     setTabs(updatedTabs);
   }, [window.location.href]);
-
-  console.log('Tabs: ', tabs);
 
   return (
     <>
@@ -123,43 +123,6 @@ const Sidebar = ({handle}) => {
           <TwitterIcon />
         </header>
         <ul>
-          {/* <li onClick={handleHomeRoute}>
-            <div className="sidebar__shortWrap">
-              <span>
-                {' '}
-                <i className="fas fa-home fa-2x"></i>
-              </span>
-
-              <span>Home</span>
-            </div>
-          </li>
-          <li>
-            <div className="sidebar__shortWrap">
-              <span>
-                <i className="fas fa-hashtag fa-2x"></i>
-              </span>
-              <span>Explore</span>
-            </div>
-          </li>
-          <li>
-            <div className="sidebar__shortWrap">
-              <span>
-                <i className="fas fa-bell fa-2x"></i>
-              </span>
-              <span>Notifications</span>
-            </div>
-          </li>
-          <li onClick={handleProfileRoute}>
-            <div className="sidebar__shortWrap">
-              <span>
-                <i className="far fa-user fa-2x"></i>
-              </span>
-              <span>Profile</span>
-            </div>
-          </li>
-          <li>
-            <button onClick={showModal}>Tweet</button>
-          </li> */}
           {tabs.map((tab) => {
             return (
               <li onClick={() => handleTabClick(tab)} key={tab.id}>
@@ -177,7 +140,7 @@ const Sidebar = ({handle}) => {
               </li>
             );
           })}
-            <li>
+          <li>
             <button onClick={showModal}>Tweet</button>
           </li>
         </ul>

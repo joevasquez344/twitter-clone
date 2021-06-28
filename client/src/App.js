@@ -6,20 +6,19 @@ import './App.scss';
 import {getUserDetails} from 'redux/auth/auth.actions';
 
 import AppRoute from 'components/routes/AppRoute';
+import AuthLayout from 'layouts/AuthLayout';
 
 import Landing from './pages/Landing/Landing';
 import Login from './pages/Login/Login';
 import Layout from './layout';
-import Home from 'containers/Home/Home';
-import Profile from 'containers/Profile/Profile';
-import Friends from 'containers/Friends/Friends';
-import PostDetails from 'containers/PostDetails/PostDetails';
+import Home from 'pages/Home/Home';
+import Profile from 'pages/Profile/Profile2';
+import Friends from 'pages/Friends/Friends'
+import PostDetails from 'pages/PostDetails/PostDetails';
 
 const App = () => {
   const history = useHistory();
-  const user = useSelector((state) => state.auth.user);
 
-  useEffect(() => {}, []);
   return (
     <div className="app">
       <Switch>
@@ -41,15 +40,16 @@ const App = () => {
           name="Login"
           render={(props) => <Login {...props} />}
         />
-        <AppRoute exact path="/" layout={Layout} component={Home} />
-        <AppRoute exact path="/home" layout={Layout} component={Home} />
+        {/* <AppRoute exact path="/" layout={Layout} component={Home} />
+        <AppRoute exact path="/home" layout={Layout} component={Home} /> */}
+        <AppRoute exact path="/" layout={AuthLayout} component={Home} />
+        <AppRoute exact path="/home" layout={AuthLayout} component={Home} />
         <AppRoute exact path="/:handle" layout={Layout} component={Profile} />
         <AppRoute
           exact
           path="/:handle/likes"
           layout={Layout}
           component={Profile}
-          fetchData={getUserDetails}
         />
         <AppRoute
           exact
@@ -81,7 +81,6 @@ const App = () => {
           layout={Layout}
           component={PostDetails}
         /> */}
-        
       </Switch>
     </div>
   );

@@ -1,4 +1,4 @@
-import {DeviceHub} from '@material-ui/icons';
+
 import {
   GET_POSTS,
   CREATE_POST,
@@ -30,9 +30,14 @@ export default (state = initialState, action) => {
       };
     case CREATE_POST:
       // const postsFromStorage = localStorage.getItem('posts') ? JSON.parse(localStorage.getItem('posts')) : [];
+
       return {
         ...state,
         posts: [payload, ...state.posts],
+        post: {
+          ...state.post,
+          comments: [payload, ...state.post.comments],
+        },
         isLoading: false,
       };
     case UPDATE_LIKES:

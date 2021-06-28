@@ -1,43 +1,28 @@
-import React, {useEffect} from 'react';
-import {
-  useHistory,
-  BrowserRouter as Router,
-  Switch,
-  HashRouter,
-  useLocation,
-  useParams,
-} from 'react-router-dom';
+import React from 'react';
+import {useHistory} from 'react-router-dom';
 import './Layout.scss';
 
-import Sidebar from 'layout/Sidebar';
-import Center from 'layout/Center';
+import Sidebar from 'layout/Sidebar'; 
 
 import {useDispatch, useSelector} from 'react-redux';
 import {logout} from 'redux/auth/auth.actions';
 
 const Layout = (props) => {
   const history = useHistory();
-  const location = useLocation();
-  const params = useParams();
 
   const dispatch = useDispatch();
-  const handle = useSelector(state => state.auth.user.handle);
+  const handle = useSelector((state) => state.auth.user.handle);
 
   const handleLogout = () => {
     dispatch(logout());
     history.push('/landing');
   };
 
-  useEffect(() => {
-    // history.push('/home');
-  }, []);
   return (
     <>
       This is the best
       <div className="layout">
         <Sidebar handle={handle} />
-        {/* <Center {...props} />
-         */}
         <div style={styles.overflow}>{props.children}</div>
 
         <div className="trending">

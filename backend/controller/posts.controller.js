@@ -59,6 +59,8 @@ const getPostById = asyncHandler(async (req, res) => {
     comments,
   };
 
+  console.log('post post: ', post)
+
   res.json(post);
 });
 

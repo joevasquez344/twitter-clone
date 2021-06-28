@@ -1,10 +1,7 @@
-import React, {useState, useEffect, Suspense} from 'react';
+import React from 'react';
 import './Profile.scss';
-import axios from 'axios';
 
 import {connect} from 'react-redux';
-
-import {checkForUserInStorage} from '../../helpers/auth';
 
 import Spinner from 'react-bootstrap/Spinner';
 import TweetFeed from 'components/tweets/TweetFeed/TweetFeed';
@@ -21,34 +18,14 @@ import {
 } from 'redux/auth/auth.actions';
 import UnfollowModal from 'components/modals/UnfollowModal/UnfollowModal';
 import Tabs from 'components/Tabs/Tabs';
+import {TABS_DATA} from './data';
 
 class Profile extends React.Component {
   state = {
     editProfileModal: false,
     unfollowModal: false,
     isFollowing: false,
-    tabs: [
-      {
-        id: 1,
-        label: 'Tweets',
-        isActive: false,
-      },
-      {
-        id: 2,
-        label: 'Tweets & Replies',
-        isActive: false,
-      },
-      {
-        id: 3,
-        label: 'Media',
-        isActive: false,
-      },
-      {
-        id: 4,
-        label: 'Likes',
-        isActive: false,
-      },
-    ],
+    tabs: TABS_DATA
   };
 
   handleTabClick = (id) => {
@@ -178,7 +155,6 @@ class Profile extends React.Component {
   };
 
   async componentDidMount() {
-    console.log('DID MOUNT');
 
     const {
       history,
@@ -224,12 +200,6 @@ class Profile extends React.Component {
     }
   }
 
-  // componentWillMount() {
-  //   const handle = this.props.match.params.handle;
-  //   console.log('WILL MOUNT HANDLE: ', handle)
-  //   const result = checkForUserInStorage();
-  //   if (result === null) this.props.getUserDetails(handle);
-  // }
 
   render() {
     const {isFollowing, tabs} = this.state;
@@ -321,7 +291,6 @@ class Profile extends React.Component {
             <Tabs
               tabs={tabs}
               handleTabClick={this.handleTabClick}
-              userDetails={this.props.userDetails}
             />
             {this.props.isLoading ? <Spinner /> : this.renderTabContent()}
           </div>

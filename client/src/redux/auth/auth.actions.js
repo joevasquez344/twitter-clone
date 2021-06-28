@@ -1,4 +1,3 @@
-import firebase from '../../firebase/config';
 import axios from 'axios';
 
 import {
@@ -141,8 +140,6 @@ export const getUserDetails = (handle) => async (dispatch, getState) => {
       },
     };
 
-    console.log('AUTH HANDLE: ', handle)
-
     const {data} = await axios.get(`/api/users/${handle}`, config);
 
     dispatch({
@@ -151,13 +148,15 @@ export const getUserDetails = (handle) => async (dispatch, getState) => {
     });
 
     localStorage.setItem('userDetails', JSON.stringify(data));
-    return getState().auth.userDetails;
+   
+    // return getState().auth.userDetails;
   } catch (error) {
     dispatch({
       type: USER_DETAILS_FAILED,
       payload: 'User Not Found',
     });
   }
+
 };
 
 export const getUsersPosts = (handle) => async (dispatch, getState) => {

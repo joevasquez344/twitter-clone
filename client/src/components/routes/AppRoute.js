@@ -1,36 +1,22 @@
-import React, {useEffect} from 'react';
-
+import React from 'react';
 import {Route, Redirect} from 'react-router-dom';
+import {useSelector} from 'react-redux';
 
-import {checkForUserInStorage} from '../../helpers/auth';
+const AppRoute = ({component: Component, layout: Layout, path, fetchData, ...rest}) => {
 
-import {useSelector, useDispatch} from 'react-redux';
-import {getUserDetails} from '../../redux/auth/auth.actions';
-
-const AppRoute = ({component: Component, layout: Layout, path, ...rest}) => {
-  const {user, isLoading} = useSelector((state) => state.auth);
-  const dispatch = useDispatch();
-
-  // useEffect(() => {
-  //   const result = checkForUserInStorage();
-
-  //   if (result === null) return dispatch(getUserDetails(user.handle));
-  // }, []);
-
+  const user = useSelector((state) => state.auth.user);
   return (
     <Route
       {...rest}
-      render={(props) => {
-        if (!user) {
-          return <Redirect to="/landing" />;
-        } else {
-          return (
-            <Layout>
-              <Component {...props}></Component>
-            </Layout>
-          );
-        }
-      }}
+      render={(props) =>
+        !user ? (
+          <Redirect to="/landing" />
+        ) : (
+          <Layout>
+            <Component {...props}></Component>
+          </Layout>
+        )
+      }
     />
   );
 };

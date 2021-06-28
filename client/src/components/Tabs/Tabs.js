@@ -1,46 +1,24 @@
 import React from 'react';
 import './Tabs.scss';
+import {useSelector} from 'react-redux';
 
-import TweetFeed from 'components/tweets/TweetFeed/TweetFeed';
-import {
-    getUsersPosts,
-    getUsersLikedPosts,
-    getFollowers,
-    clearUserDetailsFromStorage,
-    follow,
-    unfollow,
-  } from 'redux/auth/auth.actions';
+const Tabs = ({tabs, handleTabClick, routing: {param}}) => {
 
-import {connect} from 'react-redux';
+  return (
+    <div className="profile__tabs">
+      <ul>
+        {tabs.map((tab) => (
+          <li
+            className={tab.isActive ? 'profile__tab--active' : 'profile__tab'}
+            onClick={() => handleTabClick(tab.id, tab.route(param))}
+            key={tab.id}
+          >
+            {tab.label}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
 
-class Tabs extends React.Component {
-  
-    render() {
-      return (
-        <div className="profile__tabs">
-        <ul>
-          {this.props.tabs.map((tab) => {
-            return (
-              <li
-                className={
-                  tab.isActive ? 'profile__tab--active' : 'profile__tab'
-                }
-                onClick={() => this.props.handleTabClick(tab.id)}
-                key={tab.id}
-              >
-                {tab.label}
-              </li>
-            );
-          })}
-        </ul>
-      </div>
-      )
-    }
-  }
-
-  const mapStateToProps = (state) => ({
-      userDetails: state.auth.userDetails 
-  })
-  
-  export default connect(mapStateToProps, {})(Tabs)
-  
+export default Tabs;

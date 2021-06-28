@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import "./UpdateProfileModal.scss";
 
-import GifIcon from "@material-ui/icons/Gif";
-
 const UpdateProfileModal = ({ hideModal }) => {
   const [nameClick, setNameClick] = useState(false);
   const [bioClick, setBioClick] = useState(false);
@@ -39,7 +37,6 @@ const UpdateProfileModal = ({ hideModal }) => {
 
   return (
     <div className="updateProfile">
-        
       <header>
         <i onClick={hideModal} className="fas fa-times fa-2x"></i>
         <h3>Edit profile</h3>

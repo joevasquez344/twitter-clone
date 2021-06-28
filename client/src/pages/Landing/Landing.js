@@ -1,32 +1,26 @@
-import React, { useState, useEffect } from "react";
-import "./Landing.scss";
-import { useHistory } from "react-router-dom";
+import React, {useState, useEffect} from 'react';
+import './Landing.scss';
+import {useHistory} from 'react-router-dom';
 
-import {checkForUserInStorage} from '../../helpers/auth'
+import {useSelector} from 'react-redux';
 
-import {useSelector} from 'react-redux'
-
-import SignUpModal from "components/modals/SignUpModal/SignUpModal";
-import TwitterIcon from "components/icons/TwitterIcon";
+import SignUpModal from 'components/modals/SignUpModal/SignUpModal';
+import TwitterIcon from 'components/icons/TwitterIcon';
 
 const Landing = () => {
   const [isModalPresent, setIsModalPresent] = useState(false);
 
   const history = useHistory();
 
-  const user = useSelector(state => state.auth.user);
+  const user = useSelector((state) => state.auth.user);
 
   const hideModal = () => setIsModalPresent(false);
   const showModal = () => setIsModalPresent(true);
 
   useEffect(() => {
-    checkForUserInStorage();
-    if (user) {
-      history.push('/home');
-    }
-    console.log('Mounted')
+    user && history.push('/home');
   }, []);
- 
+
   return (
     <div className="landing">
       <div className="landing__left">
@@ -64,7 +58,7 @@ const Landing = () => {
           <small className="small">Join Twitter today</small>
           <div className="landing__buttonGrouping">
             <button onClick={() => setIsModalPresent(true)}>Sign Up</button>
-            <button onClick={() => history.push("/login")}>Log In</button>
+            <button onClick={() => history.push('/login')}>Log In</button>
           </div>
         </section>
       </div>

@@ -1,3 +1,15 @@
+@import '../../../scss/1-helpers/variables';
+
+
 .giphy-modal {
-    
+    width: 23vw;
+    height: 50vh;
+    position: absolute;
+    background: $twitter-navy; 
+    left: 38.5%;
+    top: 25%;
+    z-index: 2;
+    color: white;
+    border-radius: 8px;
+    box-shadow: 0px 0px 100px $twitter-blue;
 }
